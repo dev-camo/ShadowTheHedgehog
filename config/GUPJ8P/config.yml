@@ -1,0 +1,6 @@
+object_base: orig/GUPJ8P
+object: sys/main.dol
+hash: 72f47bca7b72ec385a6fa30e123a96cc0fd19bab
+symbols: config/GUPJ8P/symbols.txt
+splits: config/GUPJ8P/splits.txt
+mw_comment_version: 11

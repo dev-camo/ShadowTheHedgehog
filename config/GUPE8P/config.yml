@@ -1,0 +1,6 @@
+object_base: orig/GUPE8P
+object: sys/main.dol
+hash: 118ef49ebd45b371b6f514e0e1b6d1ba7cf12904
+symbols: config/GUPE8P/symbols.txt
+splits: config/GUPE8P/splits.txt
+mw_comment_version: 11

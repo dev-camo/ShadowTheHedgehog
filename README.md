@@ -1,0 +1,102 @@
+Shadow the Hedgehog  
+[![Build Status]][actions] [![Code Progress]][progress] [![Data Progress]][progress]
+=============
+[<img src="https://decomp.dev/dev-camo/ShadowTheHedgehog.svg?w=512&h=256" width="512" height="256">][Progress]
+=============
+
+<!--
+Replace with your repository's URL.
+-->
+[Build Status]: https://github.com/dev-camo/ShadowTheHedgehog/actions/workflows/build.yml/badge.svg
+[actions]: https://github.com/dev-camo/ShadowTheHedgehog/actions/workflows/build.yml
+<!--
+decomp.dev progress badges
+See https://decomp.dev/api for an API overview.
+-->
+[Code Progress]: https://decomp.dev/dev-camo/ShadowTheHedgehog.svg?mode=shield&measure=code&label=Code
+[Data Progress]: https://decomp.dev/dev-camo/ShadowTheHedgehog.svg?mode=shield&measure=data&label=Data
+[progress]: https://decomp.dev/dev-camo/ShadowTheHedgehog
+
+A work-in-progress decompilation of Shadow the Hedgehog.
+
+This repository does **not** contain any game assets or assembly whatsoever. An existing copy of the game is required.
+
+Supported versions:
+
+- `GUPE8P`: Rev 0 (USA)
+- `GUPJ8P`: Rev 0 (Japan)
+- `GUPP8P`: Rev 0 (Europe / Australia)
+
+AI Use Disclosure
+========================
+
+This project uses large language model (LLM) assistance tools to support
+decompilation analysis, code development, build troubleshooting, and documentation.
+
+Dependencies
+============
+
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then run
+these commands from the repository root:
+
+```sh
+uv sync --locked
+```
+
+The project requires Python 3.14 or newer. uv creates `.venv` and installs the
+Ninja version recorded in `uv.lock`, obtaining a compatible Python if needed.
+Use `uv run --locked` for project commands; activating the environment is optional.
+Keep `pyproject.toml` and `uv.lock` together when setting up another checkout.
+If `--locked` reports an inconsistent lockfile, resolve the manifest/lockfile mismatch
+instead of bypassing the check or upgrading dependencies as part of a normal build.
+
+The build downloads its pinned decomp-toolkit, objdiff CLI, compiler package,
+and other native tools into `build/`. These are separate from uv's Python
+environment. On Linux/macOS, the build uses wibo to run the Windows compiler tools;
+on Windows, use native tooling. Cross-host filesystem watching can affect objdiff
+automatic rebuilds, so rebuild explicitly if changes are not detected.
+
+Building
+========
+
+- Clone the repository:
+
+  ```sh
+  git clone https://github.com/my/repo.git
+  ```
+
+- Copy your game's disc image to `orig/{GUPE8P,GUPJ8P,GUPP8P}`.
+  - Supported formats: ISO (GCM), RVZ, WIA, WBFS, CISO, NFS, GCZ, TGC
+  - After the initial build, the disc image can be deleted to save space.
+
+- Configure:
+
+  ```sh
+  uv run --locked python configure.py
+  ```
+
+  To use another region, run `uv run --locked python configure.py --version GUPJ8P`
+  or `uv run --locked python configure.py --version GUPP8P` before building.
+  Running `uv run --locked python configure.py` selects the default `GUPE8P` (USA).
+
+- Build:
+
+  ```sh
+  uv run --locked ninja
+  ```
+
+Diffing
+=======
+
+Once the initial build succeeds, an `objdiff.json` should exist in the project root.
+
+If launching objdiff outside the uv environment on Linux/macOS, configure with
+`uv run --locked python configure.py --ninja .venv/bin/ninja` so automatic rebuilds
+use the project's Ninja. Include `--version GUPJ8P` or `--version GUPP8P` when
+working on those regions. On Windows, use `.venv/Scripts/ninja.exe` for this option.
+
+Download the latest release from [encounter/objdiff](https://github.com/encounter/objdiff). Under project settings, set `Project directory`. The configuration should be loaded automatically.
+
+Select an object from the left sidebar to begin diffing. Changes to the project will rebuild automatically: changes to source files, headers, `configure.py`, `splits.txt` or `symbols.txt`.
+
+![](.github/assets/objdiff.png)

@@ -1,0 +1,6 @@
+object_base: orig/GUPP8P
+object: sys/main.dol
+hash: 6ff04994371e93d6ba1015644f4e7467713b9363
+symbols: config/GUPP8P/symbols.txt
+splits: config/GUPP8P/splits.txt
+mw_comment_version: 11
