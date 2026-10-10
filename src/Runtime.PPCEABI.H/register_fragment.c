@@ -131,8 +131,8 @@ void FIND_EXCEPTION_FRAGMENT(char *pc, FragmentInfo *info) {
                 long_entry = (LongExceptionEntry *)(exception_table + 4);
 
                 while (long_entry->start != 0) {
-                    if (long_entry->start <= exception_offset &&
-                        long_entry->start + long_entry->length * 4 >= exception_offset) {
+                    if (long_entry->start + long_entry->length * 4 >= exception_offset &&
+                        long_entry->start <= exception_offset) {
                         info->exception_data = exception_table + long_entry->exception_offset;
                         return;
                     }
