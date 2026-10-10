@@ -62,3 +62,6 @@ Game/fn_8040E048.c:
 
 Game/fn_8041FD6C.c:
 	.text       start:0x8041FD6C end:0x8041FD70
+
+Game/fn_8041FF08.c:
+	.text       start:0x8041FF08 end:0x8041FF0C
