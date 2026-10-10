@@ -79,6 +79,9 @@ Game/fn_803BF924.c:
 Game/fn_803C7F90.c:
 	.text       start:0x803C7F90 end:0x803C8084
 
+Game/fn_803C8084.c:
+	.text       start:0x803C8084 end:0x803C80C4
+
 Game/fn_803C80C4.c:
 	.text       start:0x803C80C4 end:0x803C8100
 
