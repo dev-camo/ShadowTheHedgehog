@@ -158,32 +158,36 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
         unsigned int split_size = (size_arg);                                                      \
         unsigned int split_old_size;                                                               \
         unsigned int split_old_flags;                                                              \
+        unsigned int split_is_free;                                                                \
+        unsigned int split_is_allocated;                                                           \
         unsigned int split_remaining_size;                                                         \
         unsigned int split_owner;                                                                  \
         AllocatorBlock *split_remaining;                                                           \
         AllocatorBlock *split_following;                                                           \
         split_old_size = BlockSize(split_block);                                                   \
         split_old_flags = split_block->size_flags;                                                 \
+        split_is_free = (split_old_flags & BLOCK_FLAG_2) == 0;                                     \
+        split_is_allocated = split_is_free == 0;                                                   \
         split_owner = (split_block->tagged_area & ~1) | 1;                                         \
         split_remaining = (AllocatorBlock *)((unsigned char *)split_block + split_size);           \
         split_remaining_size = split_old_size - split_size;                                        \
         split_block->tagged_area = split_owner;                                                    \
         split_block->size_flags = split_size | (split_old_flags & BLOCK_FLAG_4);                   \
-        if ((split_old_flags & BLOCK_FLAG_2) != 0) {                                               \
+        if (split_is_allocated != 0) {                                                             \
             split_block->size_flags |= BLOCK_FLAG_2;                                               \
         } else {                                                                                   \
             *(unsigned int *)((unsigned char *)split_remaining - 4) = split_size;                  \
         }                                                                                          \
         split_remaining->tagged_area = split_owner;                                                \
         split_remaining->size_flags = split_remaining_size;                                        \
-        if ((split_old_flags & BLOCK_FLAG_2) != 0) {                                               \
-            split_remaining->size_flags |= BLOCK_FLAG_4 | BLOCK_FLAG_2;                            \
-        } else {                                                                                   \
+        if (split_is_free != 0) {                                                                  \
             split_following =                                                                      \
                 (AllocatorBlock *)((unsigned char *)split_remaining + split_remaining_size);       \
             *(unsigned int *)((unsigned char *)split_following - 4) = split_remaining_size;        \
+        } else {                                                                                   \
+            split_remaining->size_flags |= BLOCK_FLAG_4 | BLOCK_FLAG_2;                            \
         }                                                                                          \
-        if ((split_old_flags & BLOCK_FLAG_2) != 0) {                                               \
+        if (split_is_allocated != 0) {                                                             \
             split_following =                                                                      \
                 (AllocatorBlock *)((unsigned char *)split_remaining + split_remaining_size);       \
             split_following->size_flags |= BLOCK_FLAG_4;                                           \
