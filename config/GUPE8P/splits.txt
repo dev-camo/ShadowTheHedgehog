@@ -79,6 +79,10 @@ Game/fn_803BF924.c:
 Game/fn_803C7F90.c:
 	.text       start:0x803C7F90 end:0x803C8084
 
+Game/fn_803C8100.c:
+	.text       start:0x803C8100 end:0x803C8140
+	.bss        start:0x805B65A0 end:0x805B65B0
+
 Game/fn_803C8140.c:
 	.text       start:0x803C8140 end:0x803C81A4
 
