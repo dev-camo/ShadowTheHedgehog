@@ -62,7 +62,7 @@ Building
 - Clone the repository:
 
   ```sh
-  git clone https://github.com/my/repo.git
+  git clone https://github.com/dev-camo/ShadowTheHedgehog.git
   ```
 
 - Copy your game's disc image to `orig/{GUPE8P,GUPJ8P,GUPP8P}`.
