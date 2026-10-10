@@ -57,6 +57,9 @@ Runtime.PPCEABI.H/allocator_core.c:
 Runtime.PPCEABI.H/allocator_release.c:
 	.text       start:0x803A3640 end:0x803A3698
 
+Game/fn_8040C244.c:
+	.text       start:0x8040C244 end:0x8040C25C
+
 Game/fn_8040D498.c:
 	.text       start:0x8040D498 end:0x8040D4B8
 

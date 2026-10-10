@@ -329,6 +329,7 @@ config.libs = [
                 Object(Matching, "Game/fn_80424D18.c"),
                 Object(Matching, "Game/fn_8040D9D8.c"),
                 Object(Matching, "Game/fn_8040D498.c"),
+                Object(Matching, "Game/fn_8040C244.c"),
             ]
             if config.version == "GUPE8P"
             else []
