@@ -296,6 +296,7 @@ config.libs = [
                 # The target unit owns an EABI extab/extabindex record.
                 extra_cflags=["-Cpp_exceptions on"],
             ),
+            Object(Matching, "Runtime.PPCEABI.H/bad_exception.c"),
             Object(Matching, "Runtime.PPCEABI.H/global_destructor_chain.c"),
             Object(Matching, "Runtime.PPCEABI.H/__init_cpp_exceptions.cpp"),
         ],

@@ -29,3 +29,6 @@ Runtime.PPCEABI.H/register_fragment.c:
 	extabindex  start:0x8000761C end:0x80007628
 	.text       start:0x803A371C end:0x803A3988
 	.bss        start:0x805A61F0 end:0x805A61FC
+
+Runtime.PPCEABI.H/bad_exception.c:
+	.text       start:0x803A3988 end:0x803A3994
