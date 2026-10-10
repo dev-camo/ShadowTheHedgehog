@@ -312,6 +312,17 @@ config.libs = [
             Object(Matching, "Runtime.PPCEABI.H/__init_cpp_exceptions.cpp"),
         ],
     },
+    {
+        "lib": "Game",
+        "mw_version": config.linker_version,
+        "cflags": cflags_base,
+        "progress_category": "game",
+        "objects": (
+            [Object(Matching, "Game/fn_8040E048.c")]
+            if config.version == "GUPE8P"
+            else []
+        ),
+    },
 ]
 
 
