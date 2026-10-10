@@ -100,6 +100,9 @@ Game/fn_803C8E2C.c:
 	.text       start:0x803C8E2C end:0x803C8E8C
 	.bss        start:0x805BACC0 end:0x805BACC8
 
+Game/fn_803C8E8C.c:
+	.text       start:0x803C8E8C end:0x803C8F38
+
 Game/fn_80403054.c:
 	.text       start:0x80403054 end:0x80403058
 
