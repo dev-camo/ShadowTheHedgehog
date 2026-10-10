@@ -58,9 +58,9 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
                                    AllocatorBlock *block) {
     if (FREE_LIST_SLOT(area, offset) == block) {
         FREE_LIST_SLOT(area, offset) = block->next_free;
-        if (FREE_LIST_SLOT(area, offset) == block) {
-            FREE_LIST_SLOT(area, offset) = 0;
-        }
+    }
+    if (FREE_LIST_SLOT(area, offset) == block) {
+        FREE_LIST_SLOT(area, offset) = 0;
     }
 
     block->next_free->previous_free = block->previous_free;
