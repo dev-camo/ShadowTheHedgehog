@@ -281,11 +281,6 @@ Equivalent = (
 )  # Object should be linked when configured with --non-matching
 
 
-# Object is only matching for specific versions
-def MatchingFor(*versions):
-    return config.version in versions
-
-
 config.warn_missing_config = True
 config.warn_missing_source = False
 config.libs = [
@@ -302,9 +297,7 @@ config.libs = [
                 extra_cflags=["-Cpp_exceptions on"],
             ),
             Object(Matching, "Runtime.PPCEABI.H/global_destructor_chain.c"),
-            Object(
-                MatchingFor("GUPE8P"), "Runtime.PPCEABI.H/__init_cpp_exceptions.cpp"
-            ),
+            Object(Matching, "Runtime.PPCEABI.H/__init_cpp_exceptions.cpp"),
         ],
     },
 ]
