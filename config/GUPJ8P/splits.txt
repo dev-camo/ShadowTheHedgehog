@@ -47,3 +47,6 @@ Runtime.PPCEABI.H/exit.c:
 
 Runtime.PPCEABI.H/abort.c:
 	.text       start:0x803A31E4 end:0x803A3280
+
+Runtime.PPCEABI.H/calloc.c:
+	.text       start:0x803A3280 end:0x803A3308
