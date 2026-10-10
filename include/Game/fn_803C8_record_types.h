@@ -47,6 +47,10 @@ void fn_803C904C(Fn803C8RecordView *record, int mode, Fn803C8DescriptorView *des
 /* Inferred descriptor-filter interface; original full arity and return type are unknown. */
 void fn_803C91E0(const Fn803C8RecordView *record, int mode, Fn803C8DescriptorView *descriptor);
 
+/* Inferred mode interface from four consumed registers; original full arity/return unknown. */
+void fn_803C92E4(Fn803C8RecordView *record, int mode, int requested,
+                 Fn803C8DescriptorView *descriptor);
+
 #ifdef __cplusplus
 }
 #endif
