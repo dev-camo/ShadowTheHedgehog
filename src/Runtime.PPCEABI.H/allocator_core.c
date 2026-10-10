@@ -196,7 +196,7 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
     AllocatorBlock *following;
     unsigned int free_head_offset;
     AllocatorArea *area;
-    void *owner;
+    unsigned int owner;
     unsigned int old_size;
     unsigned int block_size;
     unsigned int required_size;
@@ -211,8 +211,8 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
         return 0;
     }
 
-    owner = *(void **)((unsigned char *)ptr - 4);
-    if (((unsigned int)owner & 1) == 0) {
+    owner = *(unsigned int *)((unsigned char *)ptr - 4);
+    if ((owner & 1) == 0) {
         old_size = *(unsigned int *)((unsigned char *)owner + 8);
     } else {
         block = (AllocatorBlock *)((unsigned char *)ptr - 8);
@@ -220,7 +220,7 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
     }
 
     if (size > old_size) {
-        if (((unsigned int)owner & 1) != 0) {
+        if ((owner & 1) != 0) {
             if (size > 0xFFFFFFCF) {
                 return 0;
             }
@@ -267,7 +267,7 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
         return new_ptr;
     }
 
-    if (((unsigned int)owner & 1) != 0) {
+    if ((owner & 1) != 0) {
         required_size = (size + 0xF) & BLOCK_SIZE_MASK;
         if (required_size < MINIMUM_BLOCK_SIZE) {
             required_size = MINIMUM_BLOCK_SIZE;
