@@ -47,33 +47,19 @@ static inline AllocatorArea *BlockArea(AllocatorBlock *block) {
     return (AllocatorArea *)(block->tagged_area & ~1);
 }
 
-static inline AllocatorBlock **FreeListHead(AllocatorArea *area) {
-    unsigned int offset;
+#define FREE_LIST_SLOT(area_arg, offset_arg)                                                       \
+    (*(AllocatorBlock **)((unsigned char *)(area_arg) + (offset_arg)))
 
-    offset = (area->free_list_offset & BLOCK_SIZE_MASK) - 4;
-    return (AllocatorBlock **)((unsigned char *)area + offset);
+static inline unsigned int FreeListOffset(AllocatorArea *area) {
+    return (area->free_list_offset & BLOCK_SIZE_MASK) - 4;
 }
 
-static inline void UnlinkFreeBlock(AllocatorArea *area, AllocatorBlock *block) {
-    AllocatorBlock **head;
-
-    head = FreeListHead(area);
-    if (*head == block) {
-        *head = block->next_free;
-        if (*head == block) {
-            *head = 0;
-        }
-    }
-
-    block->next_free->previous_free = block->previous_free;
-    block->previous_free->next_free = block->next_free;
-}
-
-static inline void UnlinkFreeBlockFromHead(AllocatorBlock **head, AllocatorBlock *block) {
-    if (*head == block) {
-        *head = block->next_free;
-        if (*head == block) {
-            *head = 0;
+static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
+                                   AllocatorBlock *block) {
+    if (FREE_LIST_SLOT(area, offset) == block) {
+        FREE_LIST_SLOT(area, offset) = block->next_free;
+        if (FREE_LIST_SLOT(area, offset) == block) {
+            FREE_LIST_SLOT(area, offset) = 0;
         }
     }
 
@@ -86,24 +72,25 @@ static inline void UnlinkFreeBlockFromHead(AllocatorBlock **head, AllocatorBlock
     do {                                                                                           \
         AllocatorArea *insert_area = (area_arg);                                                   \
         AllocatorBlock *insert_block = (block_arg);                                                \
-        AllocatorBlock **insert_head;                                                              \
+        unsigned int insert_head_offset;                                                           \
         AllocatorBlock *insert_following;                                                          \
         AllocatorBlock *insert_previous;                                                           \
         unsigned int insert_size;                                                                  \
         unsigned int insert_previous_size;                                                         \
         unsigned int insert_following_size;                                                        \
         unsigned int insert_flags;                                                                 \
-        insert_head = FreeListHead(insert_area);                                                   \
-        if (*insert_head == 0) {                                                                   \
-            *insert_head = insert_block;                                                           \
+        insert_head_offset = FreeListOffset(insert_area);                                          \
+        if (FREE_LIST_SLOT(insert_area, insert_head_offset) == 0) {                                \
+            FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_block;                        \
             insert_block->previous_free = insert_block;                                            \
             insert_block->next_free = insert_block;                                                \
         } else {                                                                                   \
-            insert_block->previous_free = (*insert_head)->previous_free;                           \
+            insert_block->previous_free =                                                          \
+                FREE_LIST_SLOT(insert_area, insert_head_offset)->previous_free;                    \
             insert_block->previous_free->next_free = insert_block;                                 \
-            insert_block->next_free = *insert_head;                                                \
+            insert_block->next_free = FREE_LIST_SLOT(insert_area, insert_head_offset);             \
             insert_block->next_free->previous_free = insert_block;                                 \
-            *insert_head = insert_block;                                                           \
+            FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_block;                        \
         }                                                                                          \
         if ((insert_block->size_flags & BLOCK_FLAG_4) == 0) {                                      \
             insert_previous_size = *(unsigned int *)((unsigned char *)insert_block - 4);           \
@@ -117,12 +104,12 @@ static inline void UnlinkFreeBlockFromHead(AllocatorBlock **head, AllocatorBlock
                     *(unsigned int *)((unsigned char *)insert_previous + insert_size - 4) =        \
                         insert_size;                                                               \
                 }                                                                                  \
-                if (*insert_head == insert_block) {                                                \
-                    *insert_head = insert_block->next_free;                                        \
+                if (FREE_LIST_SLOT(insert_area, insert_head_offset) == insert_block) {             \
+                    FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_block->next_free;     \
                 }                                                                                  \
-                UnlinkFreeBlock(insert_area, insert_block);                                        \
+                UnlinkFreeBlock(insert_area, insert_head_offset, insert_block);                    \
                 insert_block = insert_previous;                                                    \
-                *insert_head = insert_block;                                                       \
+                FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_block;                    \
             }                                                                                      \
         }                                                                                          \
         insert_size = BlockSize(insert_block);                                                     \
@@ -140,16 +127,16 @@ static inline void UnlinkFreeBlockFromHead(AllocatorBlock **head, AllocatorBlock
             } else {                                                                               \
                 insert_following->size_flags |= BLOCK_FLAG_4;                                      \
             }                                                                                      \
-            if (*insert_head == insert_following) {                                                \
-                *insert_head = insert_following->next_free;                                        \
+            if (FREE_LIST_SLOT(insert_area, insert_head_offset) == insert_following) {             \
+                FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_following->next_free;     \
             }                                                                                      \
-            if (*insert_head == insert_following) {                                                \
-                *insert_head = 0;                                                                  \
+            if (FREE_LIST_SLOT(insert_area, insert_head_offset) == insert_following) {             \
+                FREE_LIST_SLOT(insert_area, insert_head_offset) = 0;                               \
             }                                                                                      \
-            UnlinkFreeBlock(insert_area, insert_following);                                        \
-            *insert_head = insert_block;                                                           \
+            UnlinkFreeBlock(insert_area, insert_head_offset, insert_following);                    \
+            FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_block;                        \
         }                                                                                          \
-        insert_size = BlockSize(*insert_head);                                                     \
+        insert_size = BlockSize(FREE_LIST_SLOT(insert_area, insert_head_offset));                  \
         if (insert_area->largest_free_size < insert_size) {                                        \
             insert_area->largest_free_size = insert_size;                                          \
         }                                                                                          \
@@ -197,7 +184,7 @@ static inline void UnlinkFreeBlockFromHead(AllocatorBlock **head, AllocatorBlock
 void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
     AllocatorBlock *block;
     AllocatorBlock *following;
-    AllocatorBlock **free_head;
+    unsigned int free_head_offset;
     AllocatorArea *area;
     void *owner;
     unsigned int old_size;
@@ -235,11 +222,10 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
             block = (AllocatorBlock *)((unsigned char *)ptr - 8);
             block_size = BlockSize(block);
             area = BlockArea(block);
-            free_head = FreeListHead(area);
+            free_head_offset = FreeListOffset(area);
             following = (AllocatorBlock *)((unsigned char *)block + block_size);
             if ((following->size_flags & BLOCK_FLAG_2) == 0) {
                 combined_size = block_size + BlockSize(following);
-                UnlinkFreeBlockFromHead(free_head, following);
                 block->size_flags = (block->size_flags & 7) | (combined_size & BLOCK_SIZE_MASK);
                 following = (AllocatorBlock *)((unsigned char *)block + combined_size);
                 if ((block->size_flags & BLOCK_FLAG_2) == 0) {
@@ -248,6 +234,8 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
                 } else {
                     following->size_flags |= BLOCK_FLAG_4;
                 }
+                UnlinkFreeBlock(area, free_head_offset,
+                                (AllocatorBlock *)((unsigned char *)block + block_size));
 
                 if (combined_size >= required_size) {
                     if (combined_size - required_size >= MINIMUM_BLOCK_SIZE) {
@@ -285,5 +273,6 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
 #undef BLOCK_FLAG_2
 #undef BLOCK_FLAG_4
 #undef MINIMUM_BLOCK_SIZE
+#undef FREE_LIST_SLOT
 #undef INSERT_FREE_BLOCK
 #undef SPLIT_ALLOCATOR_BLOCK
