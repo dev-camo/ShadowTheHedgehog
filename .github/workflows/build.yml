@@ -7,7 +7,6 @@ on:
 jobs:
   build:
     # This is a *private* build container.
-    # See docs/github_actions.md for more information.
     container: ghcr.io/dev-camo/shadowthehedgehog-build:main
 
     runs-on: ubuntu-latest

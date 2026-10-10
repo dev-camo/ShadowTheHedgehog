@@ -21,9 +21,11 @@ from tools.project import (
     Object,
     ProgressCategory,
     ProjectConfig,
+    build_include_path,
     calculate_progress,
     generate_build,
     is_windows,
+    prepare_build_sha_manifest,
 )
 
 # Game versions
@@ -168,11 +170,13 @@ config.wibo_tag = "1.0.3"
 # Project
 config.config_path = Path("config") / config.version / "config.yml"
 config.check_sha_path = Path("config") / config.version / "build.sha1"
+config.build_check_sha_path = prepare_build_sha_manifest(config)
+build_include = build_include_path(config)
 config.asflags = [
     "-mgekko",
     "--strip-local-absolute",
     "-I include",
-    f"-I build/{config.version}/include",
+    f"-I {build_include}",
     f"--defsym BUILD_VERSION={version_num}",
 ]
 config.ldflags = [
@@ -186,7 +190,7 @@ if args.map:
     # config.ldflags.append("-listclosure") # For Wii linkers
 
 # Use for any additional files that should cause a re-configure when modified
-config.reconfig_deps = []
+config.reconfig_deps = [config.check_sha_path]
 
 # Optional numeric ID for decomp.me preset
 # Can be overridden in libraries or objects
@@ -212,7 +216,7 @@ cflags_base = [
     "-str reuse",
     "-multibyte",  # For Wii compilers, replace with `-enc SJIS`
     "-i include",
-    f"-i build/{config.version}/include",
+    f"-i {build_include}",
     f"-DBUILD_VERSION={version_num}",
     f"-DVERSION_{config.version}",
 ]

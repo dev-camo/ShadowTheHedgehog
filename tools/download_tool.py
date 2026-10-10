@@ -137,10 +137,11 @@ def main() -> None:
             import certifi
             import ssl
         except ImportError:
-            print(
-                '"certifi" module not found. Please install it using "python -m pip install certifi".'
+            parser.exit(
+                1,
+                '"certifi" module not found. Please install it using '
+                '"python -m pip install certifi"; refusing to download without TLS verification.\n',
             )
-            return
 
         with urllib.request.urlopen(
             req, context=ssl.create_default_context(cafile=certifi.where())

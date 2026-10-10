@@ -162,6 +162,7 @@ class ProjectConfig:
         self.non_matching: bool = False
         self.build_rels: bool = True  # Build REL files
         self.check_sha_path: Optional[Path] = None  # Path to version.sha1
+        self.build_check_sha_path: Optional[Path] = None
         self.config_path: Optional[Path] = None  # Path to config.yml
         self.generate_map: bool = False  # Generate map file(s)
         self.asflags: Optional[List[str]] = None  # Assembler flags
@@ -356,6 +357,50 @@ def make_flags_str(flags: Optional[List[str]]) -> str:
     return " ".join(flags)
 
 
+def normalize_configure_args(args: List[str]) -> List[str]:
+    """Remove an explicit configure mode before reusing arguments in Ninja rules."""
+    if args and args[0] == "configure":
+        args = args[1:]
+    return args
+
+
+def build_include_path(config: ProjectConfig) -> str:
+    return str(config.out_path() / "include")
+
+
+def prepare_build_sha_manifest(config: ProjectConfig) -> Path:
+    """Return a hash manifest whose paths point at this config's output directory."""
+    if config.check_sha_path is None:
+        raise ValueError("ProjectConfig.check_sha_path missing")
+
+    destination = config.out_path() / "build.sha1"
+    if config.build_dir == Path("build"):
+        return config.check_sha_path
+
+    prefix = f"build/{config.version}/"
+    rebased_prefix = f"{config.out_path().as_posix()}/"
+    lines = config.check_sha_path.read_text(encoding="utf-8").splitlines()
+    rebased = []
+    found_output = False
+    for line in lines:
+        if not line.strip():
+            rebased.append(line)
+            continue
+        try:
+            digest, path = line.split(None, 1)
+        except ValueError as exc:
+            raise ValueError(f"Invalid hash manifest line: {line}") from exc
+        if path.startswith(prefix):
+            path = rebased_prefix + path[len(prefix) :]
+            found_output = True
+        rebased.append(f"{digest}  {path}")
+    if not found_output:
+        raise ValueError(f"No {prefix} paths found in {config.check_sha_path}")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text("\n".join(rebased) + "\n", encoding="utf-8")
+    return destination
+
+
 def get_pch_out_name(config: ProjectConfig, pch: PrecompiledHeader) -> str:
     pch_rel_path = Path(pch["source"])
     pch_out_name = pch_rel_path.with_suffix(".mch")
@@ -467,7 +512,7 @@ def generate_build_ninja(
     python_lib = Path(os.path.relpath(__file__))
     python_lib_dir = python_lib.parent
     n.comment("The arguments passed to configure.py, for rerunning it.")
-    n.variable("configure_args", sys.argv[1:])
+    n.variable("configure_args", normalize_configure_args(sys.argv[1:]))
     n.variable("python", f'"{sys.executable}"')
     n.newline()
 
@@ -1323,7 +1368,7 @@ def generate_build_ninja(
         n.build(
             outputs=ok_path,
             rule="check",
-            inputs=config.check_sha_path,
+            inputs=config.build_check_sha_path or config.check_sha_path,
             implicit=[dtk, *link_outputs],
             order_only="post-build",
         )
