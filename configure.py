@@ -331,6 +331,7 @@ config.libs = [
                 Object(Matching, "Game/fn_800091D0.c"),
                 Object(Matching, "Game/fn_80403054.c"),
                 Object(Matching, "Game/fn_80403058.c"),
+                Object(Matching, "Game/fn_804034B0.c"),
                 Object(Matching, "Game/fn_80403504.c"),
                 Object(Matching, "Game/fn_80403514.c"),
                 Object(Matching, "Game/fn_80403E44.c"),
