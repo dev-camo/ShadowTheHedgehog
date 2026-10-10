@@ -12,11 +12,18 @@ typedef struct Fn803C8RecordView {
     unsigned int word_4;
     unsigned char unknown_8[4];
     unsigned int word_C;
-    unsigned char unknown_10[8];
+    unsigned int word_10;
+    unsigned int word_14;
     unsigned int word_18;
     Fn803C8RecordCallback callback_1C;
     unsigned int argument_20;
 } Fn803C8RecordView;
+
+/* Inferred two-word descriptor view; original full type/extent are unknown. */
+typedef struct Fn803C8DescriptorView {
+    unsigned int word_0;
+    int word_4;
+} Fn803C8DescriptorView;
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,6 +42,8 @@ extern const char lbl_80517120[];
 /* Inferred raw-word reader and four-register query interfaces. */
 unsigned int fn_803C8E8C(const Fn803C8RecordView *record);
 int fn_803C8F38(const Fn803C8RecordView *record, int mode, int requested, int *actual);
+/* Inferred update interface from three consumed registers; original return type is unknown. */
+void fn_803C904C(Fn803C8RecordView *record, int mode, Fn803C8DescriptorView *descriptor);
 
 #ifdef __cplusplus
 }
