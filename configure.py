@@ -325,6 +325,7 @@ config.libs = [
         "progress_category": "game",
         "objects": (
             [
+                Object(Matching, "Game/fn_80008DA4.c"),
                 Object(Matching, "Game/fn_80008E1C.c"),
                 Object(Matching, "Game/fn_800091D0.c"),
                 Object(Matching, "Game/fn_80403054.c"),
