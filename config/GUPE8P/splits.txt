@@ -23,3 +23,7 @@ Runtime.PPCEABI.H/__init_cpp_exceptions.cpp:
 	.dtors      start:0x804AA080 end:0x804AA084 rename:.dtors$10
 	.dtors      start:0x804AA084 end:0x804AA088 rename:.dtors$15
 	.sdata      start:0x805EDCA0 end:0x805EDCA8
+
+Runtime.PPCEABI.H/register_fragment.c:
+	.text       start:0x803A28D0 end:0x803A2938
+	.bss        start:0x805A5130 end:0x805A513C

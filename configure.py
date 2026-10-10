@@ -293,6 +293,7 @@ config.libs = [
         "cflags": cflags_runtime,
         "progress_category": "sdk",  # str | List[str]
         "objects": [
+            Object(NonMatching, "Runtime.PPCEABI.H/register_fragment.c"),
             Object(Matching, "Runtime.PPCEABI.H/global_destructor_chain.c"),
             Object(MatchingFor("GUPE8P"), "Runtime.PPCEABI.H/__init_cpp_exceptions.cpp"),
         ],
