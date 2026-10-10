@@ -79,11 +79,7 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
         unsigned int insert_previous_size;                                                         \
         unsigned int insert_following_size;                                                        \
         insert_head_offset = FreeListOffset(insert_area);                                          \
-        if (FREE_LIST_SLOT(insert_area, insert_head_offset) == 0) {                                \
-            FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_block;                        \
-            insert_block->previous_free = insert_block;                                            \
-            insert_block->next_free = insert_block;                                                \
-        } else {                                                                                   \
+        if (FREE_LIST_SLOT(insert_area, insert_head_offset) != 0) {                                \
             insert_block->previous_free =                                                          \
                 FREE_LIST_SLOT(insert_area, insert_head_offset)->previous_free;                    \
             insert_block->previous_free->next_free = insert_block;                                 \
@@ -147,6 +143,10 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
                 insert_following->previous_free->next_free = insert_following->next_free;          \
                 FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_block;                    \
             }                                                                                      \
+        } else {                                                                                   \
+            FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_block;                        \
+            insert_block->previous_free = insert_block;                                            \
+            insert_block->next_free = insert_block;                                                \
         }                                                                                          \
         insert_size = BlockSize(FREE_LIST_SLOT(insert_area, insert_head_offset));                  \
         if (insert_area->largest_free_size < insert_size) {                                        \
