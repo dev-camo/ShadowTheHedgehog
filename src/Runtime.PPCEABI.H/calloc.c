@@ -1,16 +1,22 @@
 #if defined(VERSION_GUPJ8P)
 #define CALLOC_FUNCTION fn_803A3280
+#define ALLOCATE_FUNCTION fn_803A3308
 #define CALLOC_ZERO_FILL_HELPER fn_803A3480
+#define ALLOCATE_HELPER fn_803A34CC
 #define ALLOCATOR_STATE lbl_805A5860
 #define ALLOCATOR_INITIALIZED lbl_805F18F8
 #elif defined(VERSION_GUPP8P)
 #define CALLOC_FUNCTION fn_803A3C90
+#define ALLOCATE_FUNCTION fn_803A3D18
 #define CALLOC_ZERO_FILL_HELPER fn_803A3E90
+#define ALLOCATE_HELPER fn_803A3EDC
 #define ALLOCATOR_STATE lbl_805A6300
 #define ALLOCATOR_INITIALIZED lbl_805F2390
 #else
 #define CALLOC_FUNCTION fn_803A2C40
+#define ALLOCATE_FUNCTION fn_803A2CC8
 #define CALLOC_ZERO_FILL_HELPER fn_803A2E40
+#define ALLOCATE_HELPER fn_803A2E8C
 #define ALLOCATOR_STATE lbl_805A5240
 #define ALLOCATOR_INITIALIZED lbl_805F12E8
 #endif
@@ -22,6 +28,7 @@ extern void __begin_critical_region(int region);
 extern void __end_critical_region(int region);
 extern void *memset(void *destination, int value, unsigned int size);
 extern void *CALLOC_ZERO_FILL_HELPER(void *heap, unsigned int size);
+extern void *ALLOCATE_HELPER(void *heap, int arg0, int arg1);
 
 void *CALLOC_FUNCTION(unsigned int count, unsigned int size) {
     void *ptr;
@@ -33,6 +40,20 @@ void *CALLOC_FUNCTION(unsigned int count, unsigned int size) {
     }
 
     ptr = CALLOC_ZERO_FILL_HELPER(ALLOCATOR_STATE, size * count);
+    __end_critical_region(1);
+    return ptr;
+}
+
+void *ALLOCATE_FUNCTION(int arg0, int arg1) {
+    void *ptr;
+
+    __begin_critical_region(1);
+    if (ALLOCATOR_INITIALIZED == 0) {
+        memset(ALLOCATOR_STATE, 0, 0x34);
+        ALLOCATOR_INITIALIZED = 1;
+    }
+
+    ptr = ALLOCATE_HELPER(ALLOCATOR_STATE, arg0, arg1);
     __end_critical_region(1);
     return ptr;
 }
