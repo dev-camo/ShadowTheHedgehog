@@ -304,6 +304,7 @@ config.libs = [
             ),
             Object(NonMatching, "Runtime.PPCEABI.H/GCN_Mem_Alloc.c"),
             Object(Matching, "Runtime.PPCEABI.H/exit.c"),
+            Object(Matching, "Runtime.PPCEABI.H/abort.c"),
             Object(Matching, "Runtime.PPCEABI.H/global_destructor_chain.c"),
             Object(Matching, "Runtime.PPCEABI.H/__init_cpp_exceptions.cpp"),
         ],
