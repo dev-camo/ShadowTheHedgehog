@@ -1,14 +1,4 @@
-typedef struct Fn8041157CVector {
-    float x;
-    float y;
-    float z;
-} Fn8041157CVector;
-
-typedef struct Fn8041157COutput {
-    float x;
-    float y;
-    float z;
-} Fn8041157COutput;
+#include "Game/fn_8040_vector_types.h"
 
 typedef struct Fn8041157CMatrix {
     float values[3][4];
@@ -17,11 +7,9 @@ typedef struct Fn8041157CMatrix {
 extern void *lbl_805F13A8;
 extern Fn8041157CMatrix *fn_80411700(void *table);
 extern void fn_8040C148(Fn8041157CMatrix *destination, const Fn8041157CMatrix *source);
-extern void fn_800091D0(Fn8041157COutput *destination, const Fn8041157COutput *source);
-
-void fn_8041157C(Fn8041157COutput *destination, const Fn8041157CMatrix *matrix,
-                 const Fn8041157CVector *vector) {
-    Fn8041157COutput output;
+void fn_8041157C(Fn8040Vector3 *destination, const Fn8041157CMatrix *matrix,
+                 const Fn8040Vector3 *vector) {
+    Fn8040Vector3 output;
     Fn8041157CMatrix matrix_copy;
 
     if (matrix == 0) {

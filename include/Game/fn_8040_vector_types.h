@@ -18,6 +18,7 @@ extern "C" {
 
 float fn_8040CCEC(const Fn8040Vector2 *vector);
 float fn_8040CF50(const Fn8040Vector3 *vector);
+void fn_800091D0(Fn8040Vector3 *destination, const Fn8040Vector3 *source);
 
 #ifdef __cplusplus
 }
