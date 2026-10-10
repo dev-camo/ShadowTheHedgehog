@@ -37,3 +37,7 @@ Runtime.PPCEABI.H/register_fragment.c:
 
 Runtime.PPCEABI.H/bad_exception.c:
 	.text       start:0x803A3988 end:0x803A3994
+
+Runtime.PPCEABI.H/GCN_Mem_Alloc.c:
+	.text       start:0x803A3994 end:0x803A3B04
+	.rodata     start:0x80514DC8 end:0x80514E3C
