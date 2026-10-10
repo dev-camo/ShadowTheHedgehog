@@ -1,16 +1,159 @@
-struct __eti_init_info;
+typedef struct ExceptionIndex {
+    unsigned int start;
+    unsigned int size_and_flags;
+    unsigned int exception_table;
+} ExceptionIndex;
 
-typedef struct FragmentInfo {
+struct __eti_init_info {
+    ExceptionIndex *index_begin;
+    ExceptionIndex *index_end;
+    char *text_start;
+    unsigned int text_size;
+};
+
+typedef struct FragmentRegistration {
     struct __eti_init_info *init_info;
     char *toc;
     int active;
+} FragmentRegistration;
+
+typedef struct FragmentInfo {
+    void *exception_record;
+    char *exception_start;
+    void *exception_data;
+    unsigned int address_base;
+    void *relative_base;
+    char *toc;
+    unsigned int reserved_18;
+    unsigned int reserved_1C;
 } FragmentInfo;
 
-static FragmentInfo fragmentinfo[1];
+typedef struct FragmentSearchInfo {
+    ExceptionIndex *index_begin;
+    ExceptionIndex *index_end;
+    unsigned int address_base;
+    void *relative_base;
+    char *toc;
+} FragmentSearchInfo;
+
+typedef struct LongExceptionEntry {
+    unsigned int start;
+    unsigned short length;
+    unsigned short exception_offset;
+} LongExceptionEntry;
+
+typedef struct ShortExceptionEntry {
+    unsigned short start;
+    unsigned short end;
+    unsigned short exception_offset;
+} ShortExceptionEntry;
+
+static FragmentRegistration fragmentinfo[1];
+
+#if defined(VERSION_GUPJ8P)
+#define FIND_EXCEPTION_FRAGMENT fn_803A2D0C
+#elif defined(VERSION_GUPP8P)
+#define FIND_EXCEPTION_FRAGMENT fn_803A371C
+#else
+#define FIND_EXCEPTION_FRAGMENT fn_803A26CC
+#endif
+
+void FIND_EXCEPTION_FRAGMENT(char *pc, FragmentInfo *info) {
+    FragmentRegistration *registration;
+    struct __eti_init_info *module;
+    ExceptionIndex *index;
+    FragmentSearchInfo search;
+    unsigned int pc_offset;
+    unsigned int exception_offset;
+    unsigned char *exception_table;
+    LongExceptionEntry *long_entry;
+    ShortExceptionEntry *short_entry;
+    int found_module;
+    int low;
+    int high;
+    int middle;
+
+    registration = fragmentinfo;
+    info->exception_record = 0;
+    info->exception_data = 0;
+
+    found_module = 0;
+    if (registration->active != 0) {
+        module = registration->init_info;
+        while (module->text_size != 0) {
+            if (pc >= module->text_start && pc < module->text_start + module->text_size) {
+                search.index_begin = module->index_begin;
+                search.index_end = module->index_end;
+                search.address_base = 0;
+                search.relative_base = 0;
+                search.toc = registration->toc;
+                found_module = 1;
+                break;
+            }
+            module++;
+        }
+    }
+
+    if (found_module == 0) {
+        return;
+    }
+
+    low = 0;
+    high = search.index_end - search.index_begin;
+    info->address_base = search.address_base;
+    info->relative_base = search.relative_base;
+    info->toc = search.toc;
+    pc_offset = (unsigned int)pc - search.address_base;
+    while (low <= high) {
+        middle = (low + high) / 2;
+        index = search.index_begin + middle;
+        if (pc_offset < index->start) {
+            high = middle - 1;
+        } else if (pc_offset > index->start + (index->size_and_flags & 0x7FFFFFFF)) {
+            low = middle + 1;
+        } else {
+            info->exception_start = (char *)(search.address_base + index->start);
+            if ((index->size_and_flags & 0x80000000) != 0) {
+                exception_table = (unsigned char *)&index->exception_table;
+            } else {
+                exception_table = (unsigned char *)search.relative_base + index->exception_table;
+            }
+            info->exception_record = exception_table;
+            exception_offset = pc_offset - index->start;
+
+            if (((*(unsigned short *)exception_table >> 3) & 1) != 0) {
+                long_entry = (LongExceptionEntry *)(exception_table + 4);
+
+                while (long_entry->start != 0) {
+                    if (long_entry->start <= exception_offset &&
+                        long_entry->start + long_entry->length * 4 >= exception_offset) {
+                        info->exception_data = exception_table + long_entry->exception_offset;
+                        return;
+                    }
+                    long_entry++;
+                }
+            } else {
+                short_entry = (ShortExceptionEntry *)(exception_table + 2);
+
+                while (short_entry->start != 0) {
+                    if (short_entry->start <= exception_offset &&
+                        short_entry->end >= exception_offset) {
+                        info->exception_data = exception_table + short_entry->exception_offset;
+                        return;
+                    }
+                    short_entry++;
+                }
+            }
+            return;
+        }
+    }
+}
+
+#undef FIND_EXCEPTION_FRAGMENT
 
 void __unregister_fragment(int fragment_id) {
     if (fragment_id >= 0 && fragment_id < 1) {
-        FragmentInfo *entry = &fragmentinfo[fragment_id];
+        FragmentRegistration *entry = &fragmentinfo[fragment_id];
         entry->init_info = 0;
         entry->toc = 0;
         entry->active = 0;

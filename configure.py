@@ -274,9 +274,11 @@ def Rel(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
     }
 
 
-Matching = True                   # Object matches and should be linked
-NonMatching = False               # Object does not match and should not be linked
-Equivalent = config.non_matching  # Object should be linked when configured with --non-matching
+Matching = True  # Object matches and should be linked
+NonMatching = False  # Object does not match and should not be linked
+Equivalent = (
+    config.non_matching
+)  # Object should be linked when configured with --non-matching
 
 
 # Object is only matching for specific versions
@@ -293,9 +295,16 @@ config.libs = [
         "cflags": cflags_runtime,
         "progress_category": "sdk",  # str | List[str]
         "objects": [
-            Object(NonMatching, "Runtime.PPCEABI.H/register_fragment.c"),
+            Object(
+                NonMatching,
+                "Runtime.PPCEABI.H/register_fragment.c",
+                # The target unit owns an EABI extab/extabindex record.
+                extra_cflags=["-Cpp_exceptions on"],
+            ),
             Object(Matching, "Runtime.PPCEABI.H/global_destructor_chain.c"),
-            Object(MatchingFor("GUPE8P"), "Runtime.PPCEABI.H/__init_cpp_exceptions.cpp"),
+            Object(
+                MatchingFor("GUPE8P"), "Runtime.PPCEABI.H/__init_cpp_exceptions.cpp"
+            ),
         ],
     },
 ]
