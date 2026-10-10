@@ -31,8 +31,8 @@ typedef struct FragmentInfo {
 typedef struct FragmentSearchInfo {
     ExceptionIndex *index_begin;
     ExceptionIndex *index_end;
-    unsigned int address_base;
-    void *relative_base;
+    unsigned long long address_base;
+    unsigned long long relative_base;
     char *toc;
 } FragmentSearchInfo;
 
@@ -63,6 +63,7 @@ void FIND_EXCEPTION_FRAGMENT(char *pc, FragmentInfo *info) {
     struct __eti_init_info *module;
     ExceptionIndex *index;
     FragmentSearchInfo search;
+    FragmentSearchInfo *search_info = &search;
     unsigned int pc_offset;
     unsigned int exception_offset;
     unsigned char *exception_table;
@@ -80,13 +81,17 @@ void FIND_EXCEPTION_FRAGMENT(char *pc, FragmentInfo *info) {
     found_module = 0;
     if (registration->active != 0) {
         module = registration->init_info;
-        while (module->text_size != 0) {
+        while (1) {
+            if (module->text_size == 0) {
+                break;
+            }
+
             if (pc >= module->text_start && pc < module->text_start + module->text_size) {
-                search.index_begin = module->index_begin;
-                search.index_end = module->index_end;
-                search.address_base = 0;
-                search.relative_base = 0;
-                search.toc = registration->toc;
+                search_info->index_begin = module->index_begin;
+                search_info->index_end = module->index_end;
+                search_info->address_base = 0;
+                search_info->relative_base = 0;
+                search_info->toc = registration->toc;
                 found_module = 1;
                 break;
             }
@@ -99,24 +104,25 @@ void FIND_EXCEPTION_FRAGMENT(char *pc, FragmentInfo *info) {
     }
 
     low = 0;
-    high = search.index_end - search.index_begin;
-    info->address_base = search.address_base;
-    info->relative_base = search.relative_base;
-    info->toc = search.toc;
-    pc_offset = (unsigned int)pc - search.address_base;
+    high = search_info->index_end - search_info->index_begin;
+    info->address_base = search_info->address_base;
+    info->relative_base = (void *)(unsigned int)search_info->relative_base;
+    info->toc = search_info->toc;
+    pc_offset = (unsigned int)pc - search_info->address_base;
     while (low <= high) {
         middle = (low + high) / 2;
-        index = search.index_begin + middle;
+        index = search_info->index_begin + middle;
         if (pc_offset < index->start) {
             high = middle - 1;
         } else if (pc_offset > index->start + (index->size_and_flags & 0x7FFFFFFF)) {
             low = middle + 1;
         } else {
-            info->exception_start = (char *)(search.address_base + index->start);
+            info->exception_start = (char *)(search_info->address_base + index->start);
             if ((index->size_and_flags & 0x80000000) != 0) {
                 exception_table = (unsigned char *)&index->exception_table;
             } else {
-                exception_table = (unsigned char *)search.relative_base + index->exception_table;
+                exception_table =
+                    (unsigned char *)search_info->relative_base + index->exception_table;
             }
             info->exception_record = exception_table;
             exception_offset = pc_offset - index->start;
