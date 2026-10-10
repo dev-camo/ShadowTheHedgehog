@@ -165,8 +165,8 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
         unsigned int split_size = (size_arg);                                                      \
         unsigned int split_old_size;                                                               \
         unsigned int split_old_flags;                                                              \
-        unsigned int split_is_free;                                                                \
-        unsigned int split_is_allocated;                                                           \
+        int split_is_free;                                                                         \
+        int split_is_allocated;                                                                    \
         unsigned int split_remaining_size;                                                         \
         unsigned int split_owner;                                                                  \
         unsigned int split_boundary_flags;                                                         \
