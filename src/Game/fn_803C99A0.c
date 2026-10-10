@@ -1,7 +1,7 @@
 #include "Game/fn_803C8_record_types.h"
 
 /* Inferred raw counter and external byte-span views; original types are unknown. */
-unsigned int lbl_805BACC8;
+extern unsigned int lbl_805BACC8;
 extern unsigned char lbl_805BACCC[];
 extern const char lbl_80517278[];
 extern void *memset(void *destination, int value, unsigned int size);
