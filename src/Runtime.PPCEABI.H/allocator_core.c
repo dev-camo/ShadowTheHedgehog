@@ -71,10 +71,10 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
 #define INSERT_FREE_BLOCK(area_arg, block_arg, following_flag_at_end_arg)                          \
     do {                                                                                           \
         AllocatorArea *insert_area = (area_arg);                                                   \
-        AllocatorBlock *insert_block = (block_arg);                                                \
         unsigned int insert_head_offset;                                                           \
         AllocatorBlock *insert_following;                                                          \
         AllocatorBlock *insert_previous;                                                           \
+        AllocatorBlock *insert_block = (block_arg);                                                \
         unsigned int insert_size;                                                                  \
         unsigned int insert_previous_size;                                                         \
         unsigned int insert_following_size;                                                        \
@@ -115,7 +115,8 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
             insert_block = FREE_LIST_SLOT(insert_area, insert_head_offset);                        \
             insert_size = BlockSize(insert_block);                                                 \
             insert_following = (AllocatorBlock *)((unsigned char *)insert_block + insert_size);    \
-            if ((insert_following->size_flags & BLOCK_FLAG_2) == 0) {                              \
+            if ((((AllocatorBlock *)((unsigned char *)insert_block + insert_size))->size_flags &   \
+                 BLOCK_FLAG_2) == 0) {                                                             \
                 insert_following_size = BlockSize(insert_following);                               \
                 insert_block->size_flags &= 7;                                                     \
                 insert_size += insert_following_size;                                              \
