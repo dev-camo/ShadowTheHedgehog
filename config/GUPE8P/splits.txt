@@ -130,6 +130,10 @@ Game/fn_803C9674.c:
 Game/fn_803C9720.c:
 	.text       start:0x803C9720 end:0x803C97D4
 
+Game/fn_803C99A0.c:
+	.text       start:0x803C99A0 end:0x803C9A7C
+	.bss        start:0x805BACC8 end:0x805BACCC
+
 Game/fn_80403054.c:
 	.text       start:0x80403054 end:0x80403058
 
