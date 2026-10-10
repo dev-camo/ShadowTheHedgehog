@@ -108,9 +108,10 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
                     insert_block->next_free->previous_free = insert_block->previous_free;          \
                     insert_block->previous_free->next_free = insert_block->next_free;              \
                 }                                                                                  \
-                insert_block = insert_previous;                                                    \
+            } else {                                                                               \
+                insert_previous = insert_block;                                                    \
             }                                                                                      \
-            FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_block;                        \
+            FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_previous;                     \
             insert_block = FREE_LIST_SLOT(insert_area, insert_head_offset);                        \
             insert_size = BlockSize(insert_block);                                                 \
             insert_following = (AllocatorBlock *)((unsigned char *)insert_block + insert_size);    \
@@ -146,7 +147,6 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
                 }                                                                                  \
                 insert_following->next_free->previous_free = insert_following->previous_free;      \
                 insert_following->previous_free->next_free = insert_following->next_free;          \
-                FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_block;                    \
             }                                                                                      \
         } else {                                                                                   \
             FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_block;                        \
@@ -274,6 +274,7 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
                 }
                 UnlinkFreeBlock(area, free_head_offset,
                                 (AllocatorBlock *)((unsigned char *)block + block_size));
+                combined_size = BlockSize(block);
 
                 if (combined_size >= required_size) {
                     if (combined_size - required_size >= MINIMUM_BLOCK_SIZE) {
