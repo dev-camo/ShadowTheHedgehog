@@ -192,6 +192,12 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
                 (AllocatorBlock *)((unsigned char *)split_remaining + split_remaining_size);       \
             split_following->size_flags |= BLOCK_FLAG_4;                                           \
         }                                                                                          \
+        if (split_is_free != 0) {                                                                  \
+            split_remaining->next_free = split_block->next_free;                                   \
+            split_remaining->next_free->previous_free = split_remaining;                           \
+            split_remaining->previous_free = split_block;                                          \
+            split_block->next_free = split_remaining;                                              \
+        }                                                                                          \
         INSERT_FREE_BLOCK(BlockArea(split_block), split_remaining, following_flag_at_end_arg);     \
     } while (0)
 
