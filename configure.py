@@ -338,6 +338,11 @@ config.libs = [
                     "Game/fn_8040CC6C.cpp",
                     extra_cflags=["-Cpp_exceptions on"],
                 ),
+                Object(
+                    NonMatching,
+                    "Game/fn_8040CCEC.c",
+                    extra_cflags=["-Cpp_exceptions on", "-fp_contract off"],
+                ),
                 Object(Matching, "Game/fn_8040CCD4.c"),
                 Object(Matching, "Game/fn_8040D6F4.c"),
                 Object(Matching, "Game/fn_8040E38C.c"),
