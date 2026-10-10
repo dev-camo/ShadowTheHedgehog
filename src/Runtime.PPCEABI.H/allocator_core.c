@@ -68,7 +68,7 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
 }
 
 /* Keep the target's repeated boundary-tag updates in the allocator-core function body. */
-#define INSERT_FREE_BLOCK(area_arg, block_arg)                                                     \
+#define INSERT_FREE_BLOCK(area_arg, block_arg, following_flag_at_end_arg)                          \
     do {                                                                                           \
         AllocatorArea *insert_area = (area_arg);                                                   \
         AllocatorBlock *insert_block = (block_arg);                                                \
@@ -123,9 +123,19 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
                 *(unsigned int *)((unsigned char *)insert_block + insert_size - 4) = insert_size;  \
             }                                                                                      \
             if ((insert_block->size_flags & BLOCK_FLAG_2) == 0) {                                  \
-                insert_following->size_flags &= ~BLOCK_FLAG_4;                                     \
+                if (following_flag_at_end_arg) {                                                   \
+                    *(unsigned int *)((unsigned char *)insert_block + insert_size) &=              \
+                        ~BLOCK_FLAG_4;                                                             \
+                } else {                                                                           \
+                    insert_following->size_flags &= ~BLOCK_FLAG_4;                                 \
+                }                                                                                  \
             } else {                                                                               \
-                insert_following->size_flags |= BLOCK_FLAG_4;                                      \
+                if (following_flag_at_end_arg) {                                                   \
+                    *(unsigned int *)((unsigned char *)insert_block + insert_size) |=              \
+                        BLOCK_FLAG_4;                                                              \
+                } else {                                                                           \
+                    insert_following->size_flags |= BLOCK_FLAG_4;                                  \
+                }                                                                                  \
             }                                                                                      \
             if (FREE_LIST_SLOT(insert_area, insert_head_offset) == insert_following) {             \
                 FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_following->next_free;     \
@@ -142,7 +152,7 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
         }                                                                                          \
     } while (0)
 
-#define SPLIT_ALLOCATOR_BLOCK(block_arg, size_arg)                                                 \
+#define SPLIT_ALLOCATOR_BLOCK(block_arg, size_arg, following_flag_at_end_arg)                      \
     do {                                                                                           \
         AllocatorBlock *split_block = (block_arg);                                                 \
         unsigned int split_size = (size_arg);                                                      \
@@ -178,7 +188,7 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
                 (AllocatorBlock *)((unsigned char *)split_remaining + split_remaining_size);       \
             split_following->size_flags |= BLOCK_FLAG_4;                                           \
         }                                                                                          \
-        INSERT_FREE_BLOCK(BlockArea(split_block), split_remaining);                                \
+        INSERT_FREE_BLOCK(BlockArea(split_block), split_remaining, following_flag_at_end_arg);     \
     } while (0)
 
 void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
@@ -239,7 +249,7 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
 
                 if (combined_size >= required_size) {
                     if (combined_size - required_size >= MINIMUM_BLOCK_SIZE) {
-                        SPLIT_ALLOCATOR_BLOCK(block, required_size);
+                        SPLIT_ALLOCATOR_BLOCK(block, required_size, 0);
                     }
                     return ptr;
                 }
@@ -263,7 +273,7 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
         block = (AllocatorBlock *)((unsigned char *)ptr - 8);
         block_size = BlockSize(block);
         if (block_size - required_size >= MINIMUM_BLOCK_SIZE) {
-            SPLIT_ALLOCATOR_BLOCK(block, required_size);
+            SPLIT_ALLOCATOR_BLOCK(block, required_size, 1);
         }
     }
     return ptr;
