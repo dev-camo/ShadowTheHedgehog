@@ -63,6 +63,9 @@ Game/fn_8040AB94.c:
 Game/fn_8040AC3C.c:
 	.text       start:0x8040AC3C end:0x8040AC68
 
+Game/fn_8040AE0C.c:
+	.text       start:0x8040AE0C end:0x8040AE10
+
 Game/fn_8040C244.c:
 	.text       start:0x8040C244 end:0x8040C25C
 
