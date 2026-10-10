@@ -193,11 +193,7 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
         split_remaining->tagged_area = split_owner;                                                \
         split_remaining_size = split_old_size - split_size;                                        \
         split_remaining->size_flags = split_remaining_size;                                        \
-        if (split_is_free != 0) {                                                                  \
-            split_following =                                                                      \
-                (AllocatorBlock *)((unsigned char *)split_remaining + split_remaining_size);       \
-            *(unsigned int *)((unsigned char *)split_following - 4) = split_remaining_size;        \
-        } else {                                                                                   \
+        if (split_is_allocated != 0) {                                                             \
             split_remaining->size_flags |= BLOCK_FLAG_4;                                           \
         }                                                                                          \
         if (split_is_allocated != 0) {                                                             \
@@ -205,6 +201,10 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
             split_following =                                                                      \
                 (AllocatorBlock *)((unsigned char *)split_remaining + split_remaining_size);       \
             split_following->size_flags |= BLOCK_FLAG_4;                                           \
+        } else {                                                                                   \
+            split_following =                                                                      \
+                (AllocatorBlock *)((unsigned char *)split_remaining + split_remaining_size);       \
+            *(unsigned int *)((unsigned char *)split_following - 4) = split_remaining_size;        \
         }                                                                                          \
         if (split_is_free != 0) {                                                                  \
             split_remaining->next_free = split_block->next_free;                                   \
