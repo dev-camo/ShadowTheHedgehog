@@ -206,7 +206,9 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
                                     insert_block->next_free = ((
                                         AllocatorBlock **)insert_area)[insert_head_offset /
                                                                        (sizeof(AllocatorBlock *))];
-                                    insert_block->next_free->previous_free = insert_block;
+                                    ((AllocatorBlock **)insert_area)[insert_head_offset /
+                                                                     (sizeof(AllocatorBlock *))]
+                                        ->previous_free = insert_block;
                                     ((AllocatorBlock **)insert_area)[insert_head_offset /
                                                                      (sizeof(AllocatorBlock *))] =
                                         insert_block;
@@ -420,7 +422,9 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
                         insert_block->next_free =
                             ((AllocatorBlock **)
                                  insert_area)[insert_head_offset / (sizeof(AllocatorBlock *))];
-                        insert_block->next_free->previous_free = insert_block;
+                        ((AllocatorBlock **)
+                             insert_area)[insert_head_offset / (sizeof(AllocatorBlock *))]
+                            ->previous_free = insert_block;
                         ((AllocatorBlock **)
                              insert_area)[insert_head_offset / (sizeof(AllocatorBlock *))] =
                             insert_block;
