@@ -117,6 +117,9 @@ Game/fn_8041FD6C.c:
 Game/fn_8041FF08.c:
 	.text       start:0x8041FF08 end:0x8041FF0C
 
+Game/fn_804202B8.c:
+	.text       start:0x804202B8 end:0x80420308
+
 Game/fn_80420438.c:
 	.text       start:0x80420438 end:0x8042043C
 
