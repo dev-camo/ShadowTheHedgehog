@@ -33,6 +33,7 @@
 #define ALLOCATOR_INITIALIZED lbl_805F12E8
 #endif
 
+/* The original BSS object is 0x38 bytes; its lazy initializer clears 0x34. */
 extern unsigned int ALLOCATOR_STATE[14];
 extern unsigned char ALLOCATOR_INITIALIZED;
 
@@ -40,7 +41,7 @@ extern void __begin_critical_region(int region);
 extern void __end_critical_region(int region);
 extern void *memset(void *destination, int value, unsigned int size);
 extern void *CALLOC_ZERO_FILL_HELPER(void *heap, unsigned int size);
-extern void *ALLOCATE_HELPER(void *heap, int arg0, int arg1);
+extern void *ALLOCATE_HELPER(void *heap, void *ptr, unsigned int size);
 extern void ALLOCATOR_RELEASE_HELPER(void *heap, void *ptr);
 extern void *ALLOCATOR_ALLOCATE_HELPER(void *heap, unsigned int size);
 
@@ -58,8 +59,8 @@ void *CALLOC_FUNCTION(unsigned int count, unsigned int size) {
     return ptr;
 }
 
-void *ALLOCATE_FUNCTION(int arg0, int arg1) {
-    void *ptr;
+void *ALLOCATE_FUNCTION(void *ptr, unsigned int size) {
+    void *result;
 
     __begin_critical_region(1);
     if (ALLOCATOR_INITIALIZED == 0) {
@@ -67,9 +68,9 @@ void *ALLOCATE_FUNCTION(int arg0, int arg1) {
         ALLOCATOR_INITIALIZED = 1;
     }
 
-    ptr = ALLOCATE_HELPER(ALLOCATOR_STATE, arg0, arg1);
+    result = ALLOCATE_HELPER(ALLOCATOR_STATE, ptr, size);
     __end_critical_region(1);
-    return ptr;
+    return result;
 }
 
 void ALLOCATOR_RELEASE_FUNCTION(void *ptr) {
@@ -94,5 +95,15 @@ void *ALLOCATOR_ALLOCATE_FUNCTION(unsigned int size) {
 
     ptr = ALLOCATOR_ALLOCATE_HELPER(ALLOCATOR_STATE, size);
     __end_critical_region(1);
+    return ptr;
+}
+
+void *CALLOC_ZERO_FILL_HELPER(void *heap, unsigned int size) {
+    void *ptr;
+
+    ptr = ALLOCATOR_ALLOCATE_HELPER(heap, size);
+    if (ptr != 0) {
+        memset(ptr, 0, size);
+    }
     return ptr;
 }

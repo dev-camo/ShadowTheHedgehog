@@ -49,4 +49,7 @@ Runtime.PPCEABI.H/abort.c:
 	.text       start:0x803A31E4 end:0x803A3280
 
 Runtime.PPCEABI.H/calloc.c:
-	.text       start:0x803A3280 end:0x803A3480
+	.text       start:0x803A3280 end:0x803A34CC
+
+Runtime.PPCEABI.H/allocator_release.c:
+	.text       start:0x803A3C80 end:0x803A3CD8
