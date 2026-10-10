@@ -305,7 +305,7 @@ config.libs = [
             Object(NonMatching, "Runtime.PPCEABI.H/GCN_Mem_Alloc.c"),
             Object(Matching, "Runtime.PPCEABI.H/calloc.c"),
             Object(NonMatching, "Runtime.PPCEABI.H/allocator_core.c"),
-            Object(NonMatching, "Runtime.PPCEABI.H/allocator_release.c"),
+            Object(Matching, "Runtime.PPCEABI.H/allocator_release.c"),
             Object(Matching, "Runtime.PPCEABI.H/exit.c"),
             Object(Matching, "Runtime.PPCEABI.H/abort.c"),
             Object(Matching, "Runtime.PPCEABI.H/global_destructor_chain.c"),

@@ -24,7 +24,8 @@ void ALLOCATOR_RELEASE_FUNCTION(void *heap, void *ptr) {
         if (((unsigned int)block_header & 1) == 0) {
             block_size = *(unsigned int *)((unsigned char *)block_header + 8);
         } else {
-            block_size = (*(unsigned int *)((unsigned char *)ptr - 8) & ~7) - 8;
+            block_size = *(unsigned int *)((unsigned char *)ptr - 8) & ~7;
+            block_size = block_size - 8;
         }
 
         if (block_size <= 0x44) {
