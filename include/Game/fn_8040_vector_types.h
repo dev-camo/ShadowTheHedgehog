@@ -20,6 +20,7 @@ float fn_8040CCEC(const Fn8040Vector2 *vector);
 float fn_8040CF50(const Fn8040Vector3 *vector);
 void fn_800091D0(Fn8040Vector3 *destination, const Fn8040Vector3 *source);
 void fn_800091EC(Fn8040Vector3 *destination, const Fn8040Vector3 *source);
+void fn_80008E1C(Fn8040Vector3 *vector, float x, float y, float z);
 
 #ifdef __cplusplus
 }
