@@ -103,6 +103,11 @@ Game/fn_8040CE74.cpp:
 Game/fn_8040CF2C.c:
 	.text       start:0x8040CF2C end:0x8040CF50
 
+Game/fn_8040CF50.cpp:
+	extab       start:0x80005870 end:0x80005878
+	extabindex  start:0x800077C0 end:0x800077CC
+	.text       start:0x8040CF50 end:0x8040CF90
+
 Game/fn_8040D498.c:
 	.text       start:0x8040D498 end:0x8040D4B8
 
