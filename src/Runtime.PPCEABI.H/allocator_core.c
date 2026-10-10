@@ -129,14 +129,16 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
                         *(unsigned int *)((unsigned char *)insert_block + insert_size) &=          \
                             ~BLOCK_FLAG_4;                                                         \
                     } else {                                                                       \
-                        insert_following->size_flags &= ~BLOCK_FLAG_4;                             \
+                        *(unsigned int *)((unsigned char *)insert_block + insert_size) &=          \
+                            ~BLOCK_FLAG_4;                                                         \
                     }                                                                              \
                 } else {                                                                           \
                     if (following_flag_at_end_arg) {                                               \
                         *(unsigned int *)((unsigned char *)insert_block + insert_size) |=          \
                             BLOCK_FLAG_4;                                                          \
                     } else {                                                                       \
-                        insert_following->size_flags |= BLOCK_FLAG_4;                              \
+                        *(unsigned int *)((unsigned char *)insert_block + insert_size) |=          \
+                            BLOCK_FLAG_4;                                                          \
                     }                                                                              \
                 }                                                                                  \
                 if (FREE_LIST_SLOT(insert_area, insert_head_offset) == insert_following) {         \
