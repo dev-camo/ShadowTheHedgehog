@@ -136,6 +136,21 @@ Game/fn_803C9720.c:
 Game/fn_803C99A0.c:
 	.text       start:0x803C99A0 end:0x803C9A7C
 
+Game/fn_803C9A7C.c:
+	.text       start:0x803C9A7C end:0x803C9B50
+
+Game/fn_803C9B50.c:
+	.text       start:0x803C9B50 end:0x803C9BFC
+
+Game/fn_803C9BFC.c:
+	.text       start:0x803C9BFC end:0x803C9CA8
+
+Game/fn_803C9CA8.c:
+	.text       start:0x803C9CA8 end:0x803C9D54
+
+Game/fn_803C9D54.c:
+	.text       start:0x803C9D54 end:0x803C9EB8
+
 Game/fn_80403054.c:
 	.text       start:0x80403054 end:0x80403058
 
