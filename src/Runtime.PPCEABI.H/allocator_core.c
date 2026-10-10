@@ -181,7 +181,10 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
         split_remaining = (AllocatorBlock *)((unsigned char *)split_block + split_size);           \
         split_remaining_size = split_old_size - split_size;                                        \
         split_block->tagged_area = split_owner;                                                    \
-        split_block->size_flags = split_size | (split_old_flags & BLOCK_FLAG_4);                   \
+        split_block->size_flags = split_size;                                                      \
+        if ((split_old_flags & BLOCK_FLAG_4) != 0) {                                               \
+            split_block->size_flags |= BLOCK_FLAG_4;                                               \
+        }                                                                                          \
         if (split_is_allocated != 0) {                                                             \
             split_block->size_flags |= BLOCK_FLAG_2;                                               \
         } else {                                                                                   \
