@@ -121,7 +121,11 @@ void FIND_EXCEPTION_FRAGMENT(char *pc, FragmentInfo *info) {
     info->relative_base = (void *)(unsigned int)search_info->relative_base;
     info->toc = search_info->toc;
     pc_offset = (unsigned int)pc - search_info->address_base;
-    while (low <= high) {
+    /* This spelling gives MWCC the original single top-of-loop exit test. */
+    for (;;) {
+        if (low > high) {
+            break;
+        }
         middle = (low + high) / 2;
         index = search_info->index_begin + middle;
         if (pc_offset < index->start) {
@@ -139,7 +143,8 @@ void FIND_EXCEPTION_FRAGMENT(char *pc, FragmentInfo *info) {
             info->exception_record = exception_table;
             exception_offset = pc_offset - index->start;
 
-            if (((*(unsigned short *)exception_table >> 3) & 1) != 0) {
+            /* The original reloads the stored record pointer before reading its header. */
+            if (((*(unsigned short *)info->exception_record >> 3) & 1) != 0) {
                 long_entry = (LongExceptionEntry *)(exception_table + 4);
 
                 while (long_entry->start != 0) {
