@@ -48,6 +48,7 @@ inline static unsigned int FreeListOffset(AllocatorArea *area) {
     return (area->free_list_offset & BLOCK_SIZE_MASK) - 4;
 }
 
+/* The target reloads the head between these checks; preserve both updates in order. */
 inline static void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
                                    AllocatorBlock *block) {
     if (((AllocatorBlock **)area)[offset / (sizeof(AllocatorBlock *))] == block) {
@@ -146,6 +147,7 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
                             }
                             if (split_is_allocated != 0) {
                                 split_block->size_flags |= BLOCK_FLAG_2;
+                                /* The target ORs this header before overwriting its size below. */
                                 split_remaining->size_flags |= BLOCK_FLAG_4;
                             } else {
                                 *((unsigned int *)(((unsigned char *)split_remaining) - 4)) =
@@ -215,6 +217,7 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
                                     insert_block = ((
                                         AllocatorBlock **)insert_area)[insert_head_offset /
                                                                        (sizeof(AllocatorBlock *))];
+                                    /* A free block footer supplies the prior block's size. */
                                     if ((insert_block->size_flags & BLOCK_FLAG_4) == 0) {
                                         insert_previous_size = *(
                                             (unsigned int *)(((unsigned char *)insert_block) - 4));
@@ -307,6 +310,7 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
                                             insert_following->next_free;
                                     }
                                 } else {
+                                    /* An empty free list starts as a circular doubly linked list. */
                                     ((AllocatorBlock **)insert_area)[insert_head_offset /
                                                                      (sizeof(AllocatorBlock *))] =
                                         insert_block;
@@ -368,6 +372,7 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
                 }
                 if (split_is_allocated != 0) {
                     split_block->size_flags |= BLOCK_FLAG_2;
+                    /* The target ORs this header before overwriting its size below. */
                     split_remaining->size_flags |= BLOCK_FLAG_4;
                 } else {
                     *((unsigned int *)(((unsigned char *)split_remaining) - 4)) = split_size;
@@ -431,6 +436,7 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
                         insert_block =
                             ((AllocatorBlock **)
                                  insert_area)[insert_head_offset / (sizeof(AllocatorBlock *))];
+                        /* A free block footer supplies the prior block's size. */
                         if ((insert_block->size_flags & BLOCK_FLAG_4) == 0) {
                             insert_previous_size =
                                 *((unsigned int *)(((unsigned char *)insert_block) - 4));
@@ -512,6 +518,7 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
                                 insert_following->next_free;
                         }
                     } else {
+                        /* An empty free list starts as a circular doubly linked list. */
                         ((AllocatorBlock **)
                              insert_area)[insert_head_offset / (sizeof(AllocatorBlock *))] =
                             insert_block;

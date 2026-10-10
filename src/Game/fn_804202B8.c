@@ -14,6 +14,7 @@ typedef struct Fn804202B8Vector {
 void fn_804202B8(Fn804202B8Vector *vector) {
     Fn804202B8FlagData *flag_data = vector->flag_data;
 
+    /* Keep these volatile reads at each test; the target reloads the flags every time. */
     if (flag_data->flags & 1) {
         vector->x = -vector->x;
     }
