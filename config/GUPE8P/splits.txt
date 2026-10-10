@@ -75,6 +75,9 @@ Game/fn_8040CD20.c:
 Game/fn_8040D498.c:
 	.text       start:0x8040D498 end:0x8040D4B8
 
+Game/fn_8040D608.c:
+	.text       start:0x8040D608 end:0x8040D640
+
 Game/fn_8040D6F4.c:
 	.text       start:0x8040D6F4 end:0x8040D714
 
