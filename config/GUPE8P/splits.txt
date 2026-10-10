@@ -111,6 +111,10 @@ Game/fn_8040CF50.cpp:
 Game/fn_8040CF90.c:
 	.text       start:0x8040CF90 end:0x8040D02C
 
+Game/fn_8040D02C.c:
+	.text       start:0x8040D02C end:0x8040D044
+	.ctors      start:0x804AA054 end:0x804AA058 rename:.ctors$50
+
 Game/fn_8040D498.c:
 	.text       start:0x8040D498 end:0x8040D4B8
 
