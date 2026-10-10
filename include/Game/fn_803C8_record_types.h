@@ -44,6 +44,8 @@ unsigned int fn_803C8E8C(const Fn803C8RecordView *record);
 int fn_803C8F38(const Fn803C8RecordView *record, int mode, int requested, int *actual);
 /* Inferred update interface from three consumed registers; original return type is unknown. */
 void fn_803C904C(Fn803C8RecordView *record, int mode, Fn803C8DescriptorView *descriptor);
+/* Inferred descriptor-filter interface; original full arity and return type are unknown. */
+void fn_803C91E0(const Fn803C8RecordView *record, int mode, Fn803C8DescriptorView *descriptor);
 
 #ifdef __cplusplus
 }
