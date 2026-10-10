@@ -162,6 +162,8 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
         unsigned int split_is_allocated;                                                           \
         unsigned int split_remaining_size;                                                         \
         unsigned int split_owner;                                                                  \
+        unsigned int split_boundary_flags;                                                         \
+        unsigned int split_boundary_size;                                                          \
         AllocatorBlock *split_remaining;                                                           \
         AllocatorBlock *split_following;                                                           \
         split_old_size = BlockSize(split_block);                                                   \
@@ -198,6 +200,13 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
             split_remaining->previous_free = split_block;                                          \
             split_block->next_free = split_remaining;                                              \
         }                                                                                          \
+        split_boundary_flags = split_remaining->size_flags;                                        \
+        split_boundary_size = split_boundary_flags & BLOCK_SIZE_MASK;                              \
+        split_remaining->size_flags = split_boundary_flags & ~BLOCK_FLAG_2;                        \
+        split_following =                                                                          \
+            (AllocatorBlock *)((unsigned char *)split_remaining + split_boundary_size);            \
+        split_following->size_flags &= ~BLOCK_FLAG_4;                                              \
+        *(unsigned int *)((unsigned char *)split_following - 4) = split_boundary_size;             \
         INSERT_FREE_BLOCK(BlockArea(split_block), split_remaining, following_flag_at_end_arg);     \
     } while (0)
 
