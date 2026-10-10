@@ -107,7 +107,8 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
                 if (FREE_LIST_SLOT(insert_area, insert_head_offset) == insert_block) {             \
                     FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_block->next_free;     \
                 }                                                                                  \
-                UnlinkFreeBlock(insert_area, insert_head_offset, insert_block);                    \
+                insert_block->next_free->previous_free = insert_block->previous_free;              \
+                insert_block->previous_free->next_free = insert_block->next_free;                  \
                 insert_block = insert_previous;                                                    \
                 FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_block;                    \
             }                                                                                      \
@@ -143,7 +144,8 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
             if (FREE_LIST_SLOT(insert_area, insert_head_offset) == insert_following) {             \
                 FREE_LIST_SLOT(insert_area, insert_head_offset) = 0;                               \
             }                                                                                      \
-            UnlinkFreeBlock(insert_area, insert_head_offset, insert_following);                    \
+            insert_following->next_free->previous_free = insert_following->previous_free;          \
+            insert_following->previous_free->next_free = insert_following->next_free;              \
             FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_block;                        \
         }                                                                                          \
         insert_size = BlockSize(FREE_LIST_SLOT(insert_area, insert_head_offset));                  \
