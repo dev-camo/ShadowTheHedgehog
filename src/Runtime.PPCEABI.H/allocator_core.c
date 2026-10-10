@@ -240,6 +240,8 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
                 block->size_flags |= combined_size & BLOCK_SIZE_MASK;
                 if ((block->size_flags & BLOCK_FLAG_2) == 0) {
                     *(unsigned int *)((unsigned char *)block + combined_size - 4) = combined_size;
+                }
+                if ((block->size_flags & BLOCK_FLAG_2) == 0) {
                     *(unsigned int *)((unsigned char *)block + combined_size) &= ~BLOCK_FLAG_4;
                 } else {
                     *(unsigned int *)((unsigned char *)block + combined_size) |= BLOCK_FLAG_4;
