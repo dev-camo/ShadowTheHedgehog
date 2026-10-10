@@ -320,6 +320,7 @@ config.libs = [
         "objects": (
             [
                 Object(NonMatching, "Game/fn_80068A3C.c"),
+                Object(Matching, "Game/fn_804212F4.c"),
                 Object(Matching, "Game/fn_8040E048.c"),
                 Object(Matching, "Game/fn_8040AB94.c"),
                 Object(Matching, "Game/fn_8040AE0C.c"),

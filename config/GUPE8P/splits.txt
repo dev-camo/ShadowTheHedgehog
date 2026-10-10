@@ -177,6 +177,9 @@ Game/fn_804202B8.c:
 Game/fn_80420438.c:
 	.text       start:0x80420438 end:0x8042043C
 
+Game/fn_804212F4.c:
+	.text       start:0x804212F4 end:0x80421300
+
 Game/fn_80424D18.c:
 	.text       start:0x80424D18 end:0x80424D20
 
