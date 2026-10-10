@@ -94,6 +94,9 @@ Game/fn_80406EB0.c:
 Game/fn_80407920.c:
 	.text       start:0x80407920 end:0x80407930
 
+Game/fn_80407930.c:
+	.text       start:0x80407930 end:0x80407960
+
 Game/fn_8040AB94.c:
 	.text       start:0x8040AB94 end:0x8040AB98
 
