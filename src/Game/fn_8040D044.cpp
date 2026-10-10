@@ -1,13 +1,9 @@
-extern "C" {
-struct Fn8040D044Vector {
-    float x;
-    float y;
-    float z;
-};
+#include "Game/fn_8040_vector_types.h"
 
+extern "C" {
 void fn_80031568(float *sine, float *cosine, float angle);
 
-void fn_8040D044(Fn8040D044Vector *result, const Fn8040D044Vector *vector, float angle) {
+void fn_8040D044(Fn8040Vector3 *result, const Fn8040Vector3 *vector, float angle) {
     float sine;
     float cosine;
     fn_80031568(&sine, &cosine, angle);
