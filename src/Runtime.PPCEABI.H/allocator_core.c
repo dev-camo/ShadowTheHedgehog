@@ -48,7 +48,7 @@ static inline AllocatorArea *BlockArea(AllocatorBlock *block) {
 }
 
 #define FREE_LIST_SLOT(area_arg, offset_arg)                                                       \
-    (*(AllocatorBlock **)((unsigned char *)(area_arg) + (offset_arg)))
+    (((AllocatorBlock **)(area_arg))[(offset_arg) / sizeof(AllocatorBlock *)])
 
 static inline unsigned int FreeListOffset(AllocatorArea *area) {
     return (area->free_list_offset & BLOCK_SIZE_MASK) - 4;
