@@ -226,13 +226,13 @@ void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
             following = (AllocatorBlock *)((unsigned char *)block + block_size);
             if ((following->size_flags & BLOCK_FLAG_2) == 0) {
                 combined_size = block_size + BlockSize(following);
-                block->size_flags = (block->size_flags & 7) | (combined_size & BLOCK_SIZE_MASK);
-                following = (AllocatorBlock *)((unsigned char *)block + combined_size);
+                block->size_flags &= 7;
+                block->size_flags |= combined_size & BLOCK_SIZE_MASK;
                 if ((block->size_flags & BLOCK_FLAG_2) == 0) {
-                    *(unsigned int *)((unsigned char *)following - 4) = combined_size;
-                    following->size_flags &= ~BLOCK_FLAG_4;
+                    *(unsigned int *)((unsigned char *)block + combined_size - 4) = combined_size;
+                    *(unsigned int *)((unsigned char *)block + combined_size) &= ~BLOCK_FLAG_4;
                 } else {
-                    following->size_flags |= BLOCK_FLAG_4;
+                    *(unsigned int *)((unsigned char *)block + combined_size) |= BLOCK_FLAG_4;
                 }
                 UnlinkFreeBlock(area, free_head_offset,
                                 (AllocatorBlock *)((unsigned char *)block + block_size));
