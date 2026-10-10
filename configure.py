@@ -297,6 +297,11 @@ config.libs = [
                 extra_cflags=["-Cpp_exceptions on"],
             ),
             Object(Matching, "Runtime.PPCEABI.H/bad_exception.c"),
+            Object(
+                Matching,
+                "Runtime.PPCEABI.H/bad_exception_dtor.c",
+                extra_cflags=["-Cpp_exceptions on"],
+            ),
             Object(Matching, "Runtime.PPCEABI.H/global_destructor_chain.c"),
             Object(Matching, "Runtime.PPCEABI.H/__init_cpp_exceptions.cpp"),
         ],
