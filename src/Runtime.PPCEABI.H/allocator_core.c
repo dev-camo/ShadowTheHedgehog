@@ -78,7 +78,6 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
         unsigned int insert_size;                                                                  \
         unsigned int insert_previous_size;                                                         \
         unsigned int insert_following_size;                                                        \
-        unsigned int insert_flags;                                                                 \
         insert_head_offset = FreeListOffset(insert_area);                                          \
         if (FREE_LIST_SLOT(insert_area, insert_head_offset) == 0) {                                \
             FREE_LIST_SLOT(insert_area, insert_head_offset) = insert_block;                        \
@@ -96,9 +95,9 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
                 if ((insert_previous_size & BLOCK_FLAG_2) == 0) {                                  \
                     insert_previous =                                                              \
                         (AllocatorBlock *)((unsigned char *)insert_block - insert_previous_size);  \
-                    insert_flags = insert_previous->size_flags & 7;                                \
+                    insert_previous->size_flags &= 7;                                              \
                     insert_size = insert_previous_size + BlockSize(insert_block);                  \
-                    insert_previous->size_flags = insert_flags | (insert_size & BLOCK_SIZE_MASK);  \
+                    insert_previous->size_flags |= insert_size & BLOCK_SIZE_MASK;                  \
                     if ((insert_previous->size_flags & BLOCK_FLAG_2) == 0) {                       \
                         *(unsigned int *)((unsigned char *)insert_previous + insert_size - 4) =    \
                             insert_size;                                                           \
@@ -116,9 +115,9 @@ static inline void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
             insert_following = (AllocatorBlock *)((unsigned char *)insert_block + insert_size);    \
             if ((insert_following->size_flags & BLOCK_FLAG_2) == 0) {                              \
                 insert_following_size = BlockSize(insert_following);                               \
-                insert_flags = insert_block->size_flags & 7;                                       \
+                insert_block->size_flags &= 7;                                                     \
                 insert_size += insert_following_size;                                              \
-                insert_block->size_flags = insert_flags | (insert_size & BLOCK_SIZE_MASK);         \
+                insert_block->size_flags |= insert_size & BLOCK_SIZE_MASK;                         \
                 if ((insert_block->size_flags & BLOCK_FLAG_2) == 0) {                              \
                     *(unsigned int *)((unsigned char *)insert_block + insert_size - 4) =           \
                         insert_size;                                                               \
