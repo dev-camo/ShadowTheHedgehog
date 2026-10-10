@@ -318,7 +318,10 @@ config.libs = [
         "cflags": cflags_base,
         "progress_category": "game",
         "objects": (
-            [Object(Matching, "Game/fn_8040E048.c")]
+            [
+                Object(Matching, "Game/fn_8040E048.c"),
+                Object(Matching, "Game/fn_8041FD6C.c"),
+            ]
             if config.version == "GUPE8P"
             else []
         ),
