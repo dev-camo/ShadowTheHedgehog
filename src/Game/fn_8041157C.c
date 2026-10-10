@@ -11,7 +11,7 @@ typedef struct Fn8041157COutput {
 } Fn8041157COutput;
 
 typedef struct Fn8041157CMatrix {
-    float values[12];
+    float values[3][4];
 } Fn8041157CMatrix;
 
 extern void *lbl_805F13A8;
@@ -29,12 +29,12 @@ void fn_8041157C(Fn8041157COutput *destination, const Fn8041157CMatrix *matrix,
         matrix = &matrix_copy;
     }
 
-    output.x = vector->y * matrix->values[1] + vector->x * matrix->values[0] +
-               vector->z * matrix->values[2];
-    output.y = vector->y * matrix->values[5] + vector->x * matrix->values[4] +
-               vector->z * matrix->values[6];
-    output.z = vector->y * matrix->values[9] + vector->x * matrix->values[8] +
-               vector->z * matrix->values[10];
+    output.x = vector->y * matrix->values[0][1] + vector->x * matrix->values[0][0] +
+               vector->z * matrix->values[0][2];
+    output.y = vector->y * matrix->values[1][1] + vector->x * matrix->values[1][0] +
+               vector->z * matrix->values[1][2];
+    output.z = vector->y * matrix->values[2][1] + vector->x * matrix->values[2][0] +
+               vector->z * matrix->values[2][2];
 
     fn_800091D0(destination, &output);
 }
