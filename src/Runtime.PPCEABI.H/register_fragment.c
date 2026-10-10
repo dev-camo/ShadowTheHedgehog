@@ -31,6 +31,8 @@ typedef struct FragmentInfo {
 typedef struct FragmentSearchInfo {
     ExceptionIndex *index_begin;
     ExceptionIndex *index_end;
+    /* USA uses paired words at sp+0x10/14 and sp+0x18/1c; consumers use 32-bit values. */
+    /* These accesses do not prove the original semantic type was unsigned long long. */
     unsigned long long address_base;
     unsigned long long relative_base;
     char *toc;
@@ -58,6 +60,15 @@ static FragmentRegistration fragmentinfo[1];
 #define FIND_EXCEPTION_FRAGMENT fn_803A26CC
 #endif
 
+/*
+ * Observed parser boundaries: module iteration ends at text_size == 0, and module text ranges are
+ * half-open. The index search masks 0x80000000 for the extent and uses that bit to choose an inline
+ * table pointer or a relative_base offset; its broader format meaning is unknown. The current
+ * comparisons accept both index endpoints. Header bit 3 selects the long-entry path; long records
+ * begin at table+4, short records at table+2, and each list stops at start == 0. Both entry range
+ * checks include their start and end values. Keep the numeric bits unnamed until their format is
+ * established.
+ */
 void FIND_EXCEPTION_FRAGMENT(char *pc, FragmentInfo *info) {
     FragmentRegistration *registration;
     struct __eti_init_info *module;

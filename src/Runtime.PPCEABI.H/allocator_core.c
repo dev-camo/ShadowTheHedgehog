@@ -18,6 +18,19 @@
 #define MINIMUM_BLOCK_SIZE 0x50
 #define MAXIMUM_ALLOCATOR_REQUEST 0xFFFFFFCF
 
+/*
+ * Reader map from the observed 32-bit accesses; the names and C types below are not recovered source
+ * declarations. AllocatorBlock words at offsets 0 and 4 hold size_flags and tagged_area; the free
+ * links occupy offsets 8 and 12 while a block is free. Sizes clear the low three bits, while this
+ * unit separately tests bits 0x2 and 0x4. tagged_area clears bit 0 to recover the area pointer.
+ * AllocatorArea's observed prefix is two links, largest_free_size, free_list_offset, and
+ * active_block_count at offsets 0, 4, 8, 12, and 16. The head slot is addressed from
+ * free_list_offset after masking and subtracting four bytes.
+ *
+ * Free-list links are circular and doubly linked: an empty list starts with both links pointing at
+ * its sole node. Removing that singleton first advances the head to next_free (itself), then the
+ * second head check clears it. Keep both checks in UnlinkFreeBlock.
+ */
 typedef struct AllocatorBlock AllocatorBlock;
 typedef struct AllocatorArea AllocatorArea;
 struct AllocatorBlock {
@@ -61,6 +74,18 @@ inline static void UnlinkFreeBlock(AllocatorArea *area, unsigned int offset,
     block->previous_free->next_free = block->next_free;
 }
 
+/*
+ * Resize path map: null pointers allocate; size zero releases and returns null. Growth of an
+ * area-owned block first tries to merge its following free block, then splits a usable remainder.
+ * If in-place growth cannot satisfy the request, the fallback allocates, copies the old payload,
+ * and releases the old pointer. Shrinkage splits only when the remainder reaches the minimum size;
+ * smaller changes keep the existing block.
+ *
+ * The target has distinct grow and shrink header-update sequences (including 0x803A3068..0x3088
+ * and 0x803A33A8..0x33C4). The source keeps those paths separate to follow the observed code, but
+ * the unit is still NonMatching, so whether the repeated split/reinsert blocks reflect required
+ * original source expansion or merely the current matching reconstruction remains provisional.
+ */
 void *ALLOCATOR_RESIZE_FUNCTION(void *heap, void *ptr, unsigned int size) {
     AllocatorBlock *block;
     AllocatorBlock *following;
