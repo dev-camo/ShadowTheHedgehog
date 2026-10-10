@@ -302,7 +302,7 @@ config.libs = [
                 "Runtime.PPCEABI.H/bad_exception_dtor.c",
                 extra_cflags=["-Cpp_exceptions on"],
             ),
-            Object(NonMatching, "Runtime.PPCEABI.H/GCN_Mem_Alloc.c"),
+            Object(Matching, "Runtime.PPCEABI.H/GCN_Mem_Alloc.c"),
             Object(Matching, "Runtime.PPCEABI.H/calloc.c"),
             Object(NonMatching, "Runtime.PPCEABI.H/allocator_core.c"),
             Object(Matching, "Runtime.PPCEABI.H/allocator_release.c"),

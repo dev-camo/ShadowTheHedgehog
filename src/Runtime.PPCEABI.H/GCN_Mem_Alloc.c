@@ -71,34 +71,31 @@ extern void *OSGetArenaLo(void);
 extern void *OSGetArenaHi(void);
 extern void OSSetArenaLo(void *arena_lo);
 
-#define INITIALIZE_DEFAULT_HEAP()                                                                  \
-    do {                                                                                           \
-        if (DEFAULT_HEAP == -1) {                                                                  \
-            void *arena_lo;                                                                        \
-            void *arena_hi;                                                                        \
-            int heap;                                                                              \
-            OSReport(INIT_ERROR_MESSAGE);                                                          \
-            OSReport(INIT_HEAP_MESSAGE);                                                           \
-            arena_lo = OSGetArenaLo();                                                             \
-            arena_hi = OSGetArenaHi();                                                             \
-            arena_lo = INITIALIZE_ALLOC(arena_lo, arena_hi, 1);                                    \
-            OSSetArenaLo(arena_lo);                                                                \
-            arena_lo = (void *)(((unsigned int)arena_lo + 0x1F) & ~0x1F);                          \
-            arena_hi = (void *)((unsigned int)arena_hi & ~0x1F);                                   \
-            heap = CREATE_HEAP(arena_lo, arena_hi);                                                \
-            SET_CURRENT_HEAP(heap);                                                                \
-            OSSetArenaLo(arena_hi);                                                                \
-        }                                                                                          \
-    } while (0)
+static inline void InitializeDefaultHeap(void) {
+    if (DEFAULT_HEAP == -1) {
+        void *arena_lo;
+        void *arena_hi;
+        int heap;
+        OSReport(INIT_ERROR_MESSAGE);
+        OSReport(INIT_HEAP_MESSAGE);
+        arena_lo = OSGetArenaLo();
+        arena_hi = OSGetArenaHi();
+        arena_lo = INITIALIZE_ALLOC(arena_lo, arena_hi, 1);
+        OSSetArenaLo(arena_lo);
+        arena_lo = (void *)(((unsigned int)arena_lo + 0x1F) & ~0x1F);
+        arena_hi = (void *)((unsigned int)arena_hi & ~0x1F);
+        heap = CREATE_HEAP(arena_lo, arena_hi);
+        SET_CURRENT_HEAP(heap);
+        OSSetArenaLo(arena_hi);
+    }
+}
 
 void FREE_FUNCTION(void *ptr) {
-    INITIALIZE_DEFAULT_HEAP();
+    InitializeDefaultHeap();
     FREE_TO_HEAP(DEFAULT_HEAP, ptr);
 }
 
 void *ALLOCATE_FUNCTION(unsigned int size) {
-    INITIALIZE_DEFAULT_HEAP();
+    InitializeDefaultHeap();
     return ALLOC_FROM_HEAP(DEFAULT_HEAP, size);
 }
-
-#undef INITIALIZE_DEFAULT_HEAP
