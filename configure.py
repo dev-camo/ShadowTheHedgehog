@@ -342,7 +342,7 @@ config.libs = [
                     extra_cflags=["-Cpp_exceptions on"],
                 ),
                 Object(
-                    NonMatching,
+                    Matching,
                     "Game/fn_8040CCEC.c",
                     extra_cflags=["-Cpp_exceptions on", "-fp_contract off"],
                 ),
