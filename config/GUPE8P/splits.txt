@@ -95,6 +95,11 @@ Game/fn_8040CD60.c:
 	.text       start:0x8040CD60 end:0x8040CD74
 	.ctors      start:0x804AA050 end:0x804AA054 rename:.ctors$50
 
+Game/fn_8040CE74.cpp:
+	extab       start:0x80005860 end:0x80005868
+	extabindex  start:0x800077A8 end:0x800077B4
+	.text       start:0x8040CE74 end:0x8040CEE8
+
 Game/fn_8040CF2C.c:
 	.text       start:0x8040CF2C end:0x8040CF50
 

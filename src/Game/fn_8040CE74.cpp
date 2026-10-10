@@ -1,0 +1,28 @@
+extern "C" {
+extern float lbl_805FAD80;
+extern float lbl_805FAD84;
+extern float lbl_805E07A0[4];
+
+struct Fn8040CE74Vector {
+    float x;
+    float y;
+    float z;
+};
+
+float fn_8040CF50(const Fn8040CE74Vector *vector);
+void fn_800091D0(void *destination, const void *source);
+
+float fn_8040CE74(Fn8040CE74Vector *vector) {
+    float magnitude = fn_8040CF50(vector);
+
+    if (magnitude < lbl_805FAD84) {
+        fn_800091D0(vector, lbl_805E07A0);
+        return lbl_805FAD80;
+    }
+
+    vector->x /= magnitude;
+    vector->y /= magnitude;
+    vector->z /= magnitude;
+    return magnitude;
+}
+}
