@@ -10,6 +10,8 @@
 # https://github.com/encounter/dtk-template
 ###
 
+import argparse
+import copy
 import io
 import json
 import math
@@ -163,6 +165,7 @@ class ProjectConfig:
         self.build_rels: bool = True  # Build REL files
         self.check_sha_path: Optional[Path] = None  # Path to version.sha1
         self.build_check_sha_path: Optional[Path] = None
+        self.configure_args: Optional[List[str]] = None
         self.config_path: Optional[Path] = None  # Path to config.yml
         self.generate_map: bool = False  # Generate map file(s)
         self.asflags: Optional[List[str]] = None  # Assembler flags
@@ -357,10 +360,36 @@ def make_flags_str(flags: Optional[List[str]]) -> str:
     return " ".join(flags)
 
 
-def normalize_configure_args(args: List[str]) -> List[str]:
-    """Remove an explicit configure mode before reusing arguments in Ninja rules."""
-    if args and args[0] == "configure":
-        args = args[1:]
+class _QuietArgumentParser(argparse.ArgumentParser):
+    def error(self, message: str) -> None:
+        raise ValueError(message)
+
+
+def normalize_configure_args(
+    args: List[str], parser: argparse.ArgumentParser, mode: str
+) -> List[str]:
+    """Remove only the parsed positional mode, preserving option values."""
+    option_parser = _QuietArgumentParser(add_help=False)
+    for action in parser._actions:
+        if action.option_strings:
+            option_parser._add_action(copy.copy(action))
+
+    option_values, positional_args = option_parser.parse_known_args(args)
+    if positional_args != [mode]:
+        return args
+
+    for index in range(len(args) - 1, -1, -1):
+        if args[index] != mode:
+            continue
+        candidate = args[:index] + args[index + 1 :]
+        try:
+            candidate_values, candidate_positionals = option_parser.parse_known_args(
+                candidate
+            )
+        except ValueError:
+            continue
+        if candidate_values == option_values and not candidate_positionals:
+            return candidate
     return args
 
 
@@ -512,7 +541,10 @@ def generate_build_ninja(
     python_lib = Path(os.path.relpath(__file__))
     python_lib_dir = python_lib.parent
     n.comment("The arguments passed to configure.py, for rerunning it.")
-    n.variable("configure_args", normalize_configure_args(sys.argv[1:]))
+    n.variable(
+        "configure_args",
+        config.configure_args if config.configure_args is not None else sys.argv[1:],
+    )
     n.variable("python", f'"{sys.executable}"')
     n.newline()
 

@@ -25,6 +25,7 @@ from tools.project import (
     calculate_progress,
     generate_build,
     is_windows,
+    normalize_configure_args,
     prepare_build_sha_manifest,
 )
 
@@ -140,6 +141,7 @@ args = parser.parse_args()
 
 config = ProjectConfig()
 config.version = str(args.version)
+config.configure_args = normalize_configure_args(sys.argv[1:], parser, args.mode)
 version_num = VERSIONS.index(config.version)
 
 # Apply arguments
