@@ -49,4 +49,4 @@ Runtime.PPCEABI.H/abort.c:
 	.text       start:0x803A2BA4 end:0x803A2C40
 
 Runtime.PPCEABI.H/calloc.c:
-	.text       start:0x803A2C40 end:0x803A2DC4
+	.text       start:0x803A2C40 end:0x803A2E40

@@ -5,6 +5,8 @@
 #define ALLOCATE_HELPER fn_803A34CC
 #define ALLOCATOR_RELEASE_FUNCTION fn_803A3394
 #define ALLOCATOR_RELEASE_HELPER fn_803A3C80
+#define ALLOCATOR_ALLOCATE_FUNCTION fn_803A3404
+#define ALLOCATOR_ALLOCATE_HELPER fn_803A3CD8
 #define ALLOCATOR_STATE lbl_805A5860
 #define ALLOCATOR_INITIALIZED lbl_805F18F8
 #elif defined(VERSION_GUPP8P)
@@ -14,6 +16,8 @@
 #define ALLOCATE_HELPER fn_803A3EDC
 #define ALLOCATOR_RELEASE_FUNCTION fn_803A3DA4
 #define ALLOCATOR_RELEASE_HELPER fn_803A4690
+#define ALLOCATOR_ALLOCATE_FUNCTION fn_803A3E14
+#define ALLOCATOR_ALLOCATE_HELPER fn_803A46E8
 #define ALLOCATOR_STATE lbl_805A6300
 #define ALLOCATOR_INITIALIZED lbl_805F2390
 #else
@@ -23,6 +27,8 @@
 #define ALLOCATE_HELPER fn_803A2E8C
 #define ALLOCATOR_RELEASE_FUNCTION fn_803A2D54
 #define ALLOCATOR_RELEASE_HELPER fn_803A3640
+#define ALLOCATOR_ALLOCATE_FUNCTION fn_803A2DC4
+#define ALLOCATOR_ALLOCATE_HELPER fn_803A3698
 #define ALLOCATOR_STATE lbl_805A5240
 #define ALLOCATOR_INITIALIZED lbl_805F12E8
 #endif
@@ -36,6 +42,7 @@ extern void *memset(void *destination, int value, unsigned int size);
 extern void *CALLOC_ZERO_FILL_HELPER(void *heap, unsigned int size);
 extern void *ALLOCATE_HELPER(void *heap, int arg0, int arg1);
 extern void ALLOCATOR_RELEASE_HELPER(void *heap, void *ptr);
+extern void *ALLOCATOR_ALLOCATE_HELPER(void *heap, unsigned int size);
 
 void *CALLOC_FUNCTION(unsigned int count, unsigned int size) {
     void *ptr;
@@ -74,4 +81,18 @@ void ALLOCATOR_RELEASE_FUNCTION(void *ptr) {
 
     ALLOCATOR_RELEASE_HELPER(ALLOCATOR_STATE, ptr);
     __end_critical_region(1);
+}
+
+void *ALLOCATOR_ALLOCATE_FUNCTION(unsigned int size) {
+    void *ptr;
+
+    __begin_critical_region(1);
+    if (ALLOCATOR_INITIALIZED == 0) {
+        memset(ALLOCATOR_STATE, 0, 0x34);
+        ALLOCATOR_INITIALIZED = 1;
+    }
+
+    ptr = ALLOCATOR_ALLOCATE_HELPER(ALLOCATOR_STATE, size);
+    __end_critical_region(1);
+    return ptr;
 }
