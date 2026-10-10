@@ -10,7 +10,7 @@ typedef void (*Fn803C8RecordCallback)(unsigned int context, int argument);
 typedef struct Fn803C8RecordView {
     unsigned char unknown_0[4];
     unsigned int word_4;
-    unsigned char unknown_8[4];
+    unsigned int word_8;
     unsigned int word_C;
     unsigned int word_10;
     unsigned int word_14;
@@ -50,6 +50,14 @@ void fn_803C91E0(const Fn803C8RecordView *record, int mode, Fn803C8DescriptorVie
 /* Inferred mode interface from four consumed registers; original full arity/return unknown. */
 void fn_803C92E4(Fn803C8RecordView *record, int mode, int requested,
                  Fn803C8DescriptorView *descriptor);
+
+/* Inferred raw-word results and accessed-word interfaces; original full types/arity unknown. */
+unsigned int fn_803C9418(const Fn803C8RecordView *record, int mode);
+unsigned int fn_803C9674(const Fn803C8RecordView *record);
+/* Inferred side-effect interfaces; original full arity and returns are unknown. */
+void fn_803C950C(Fn803C8RecordView *record);
+void fn_803C95B8(Fn803C8RecordView *record, Fn803C8RecordCallback callback, unsigned int context);
+void fn_803C9720(Fn803C8RecordView *record);
 
 #ifdef __cplusplus
 }
