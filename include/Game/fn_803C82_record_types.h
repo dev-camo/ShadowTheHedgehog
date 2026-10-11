@@ -3,7 +3,7 @@
 
 /* Chosen accessed-field view; original C type/allocation extent unknown. */
 typedef struct Fn803C82RecordView {
-    unsigned char unknown_0;
+    unsigned char byte_0;
     signed char byte_1;
     unsigned char byte_2;
     unsigned char unknown_3[0x11];
@@ -25,6 +25,8 @@ extern "C" {
 /* Chosen consumed-pointer/side-effect projections; original full interfaces unknown. */
 void fn_803C8140(Fn803C82RecordView *object, int value);
 void fn_803C8294(Fn803C82RecordView *object);
+void fn_803C8464(Fn803C82RecordView *object);
+void fn_803C86F4(Fn803C82RecordView *object);
 
 #ifdef __cplusplus
 }
