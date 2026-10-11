@@ -360,7 +360,11 @@ config.libs = [
                 Object(Matching, "Game/fn_803CAB40.c", extra_cflags=["-sdata 0"]),
                 Object(Matching, "Game/lbl_805BB150.c", extra_cflags=["-sdata 0"]),
                 Object(Matching, "Game/fn_803CAC1C.c", extra_cflags=["-sdata 0"]),
+                Object(
+                    Matching, "Game/fn_803CACD0.c", extra_cflags=["-use_lmw_stmw on"]
+                ),
                 Object(Matching, "Game/fn_803CAEE4.c"),
+                Object(Matching, "Game/lbl_80568CE0.c"),
                 Object(Matching, "Game/lbl_805BF158.c", extra_cflags=["-sdata 0"]),
                 Object(Matching, "Game/lbl_805BACC8.c", extra_cflags=["-sdata 0"]),
                 Object(
