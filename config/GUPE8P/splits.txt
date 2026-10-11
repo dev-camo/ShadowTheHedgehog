@@ -151,6 +151,9 @@ Game/fn_803C9CA8.c:
 Game/fn_803C9D54.c:
 	.text       start:0x803C9D54 end:0x803C9EB8
 
+Game/fn_803CA598.c:
+	.text       start:0x803CA598 end:0x803CA68C
+
 Game/fn_80403054.c:
 	.text       start:0x80403054 end:0x80403058
 
