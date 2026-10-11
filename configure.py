@@ -330,6 +330,7 @@ config.libs = [
                 Object(Matching, "Game/fn_80008E1C.c"),
                 Object(Matching, "Game/fn_800091D0.c"),
                 Object(Matching, "Game/fn_803AC8DC.c"),
+                Object(Matching, "Game/fn_803ACABC.c"),
                 Object(Matching, "Game/fn_803C7F90.c"),
                 Object(Matching, "Game/fn_803C8084.c"),
                 Object(Matching, "Game/fn_803C80C4.c"),
@@ -367,6 +368,8 @@ config.libs = [
                 Object(Matching, "Game/lbl_80568CE0.c"),
                 Object(Matching, "Game/lbl_805BFD60.c", extra_cflags=["-sdata 0"]),
                 Object(Matching, "Game/fn_803CB43C.c", extra_cflags=["-sdata 0"]),
+                Object(Matching, "Game/fn_803CBADC.c", extra_cflags=["-sdata 0"]),
+                Object(Matching, "Game/fn_803CAF48.c"),
                 Object(Matching, "Game/lbl_805BF158.c", extra_cflags=["-sdata 0"]),
                 Object(Matching, "Game/lbl_805BACC8.c", extra_cflags=["-sdata 0"]),
                 Object(
