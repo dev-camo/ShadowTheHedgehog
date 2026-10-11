@@ -9,7 +9,7 @@
 typedef struct Fn803C9RecordView {
     unsigned char unknown_0[4];
     unsigned int word_4;
-    unsigned char unknown_8[4];
+    unsigned int word_8;
     unsigned int word_C;
     unsigned int word_10;
     unsigned int word_14;
@@ -17,7 +17,10 @@ typedef struct Fn803C9RecordView {
     unsigned int word_1C;
     unsigned int word_20;
     unsigned int word_24;
-    unsigned char unknown_28[16];
+    unsigned int word_28;
+    unsigned int word_2C;
+    unsigned int word_30;
+    unsigned int word_34;
     Fn803C8RecordCallback callback_38;
     unsigned int argument_3C;
 } Fn803C9RecordView;
