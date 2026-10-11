@@ -1,13 +1,10 @@
 #ifndef GAME_FN_803C81_QUERY_TYPES_H
 #define GAME_FN_803C81_QUERY_TYPES_H
 
-/* Chosen accessed-field view; original C type and allocation extent unknown. */
-typedef struct Fn803C81QueryView {
-    unsigned char unknown_0;
-    signed char byte_1;
-    unsigned char unknown_2[0x22];
-    unsigned int word_24;
-} Fn803C81QueryView;
+#include "Game/fn_803C82_record_types.h"
+
+/* Query-compatible alias of the shared accessed-field view. */
+typedef Fn803C82RecordView Fn803C81QueryView;
 
 #ifdef __cplusplus
 extern "C" {
