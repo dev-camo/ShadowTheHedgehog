@@ -101,6 +101,9 @@ Game/fn_803C8100.c:
 Game/fn_803C8140.c:
 	.text       start:0x803C8140 end:0x803C81A4
 
+Game/fn_803C81A4.c:
+	.text       start:0x803C81A4 end:0x803C8228
+
 Game/fn_803C8D94.c:
 	.text       start:0x803C8D94 end:0x803C8E2C
 	.bss        start:0x805BACB8 end:0x805BACC0
@@ -219,6 +222,9 @@ Game/fn_80403058.c:
 
 Game/fn_8040307C.c:
 	.text       start:0x8040307C end:0x804030A8
+
+Game/fn_804030A8.c:
+	.text       start:0x804030A8 end:0x804030F8
 
 Game/fn_804034B0.c:
 	.text       start:0x804034B0 end:0x804034D8

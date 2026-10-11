@@ -25,4 +25,15 @@ extern Fn803CBPairView lbl_805BFE20;
 extern Fn803CBPairView lbl_805BFE28;
 extern Fn803CBPairView lbl_805BFE30;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Chosen index/side-effect interface; original full types/arity/return unknown. */
+void fn_803CB45C(unsigned int index);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif
