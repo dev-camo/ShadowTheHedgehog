@@ -115,6 +115,9 @@ Game/lbl_805BB150.c:
 Game/lbl_805BF158.c:
 	.bss        start:0x805BF158 end:0x805BFD60
 
+Game/lbl_805BFD60.c:
+	.bss        start:0x805BFD60 end:0x805BFE38
+
 Game/fn_803C8E8C.c:
 	.text       start:0x803C8E8C end:0x803C8F38
 
@@ -189,6 +192,9 @@ Game/fn_803CACD0.c:
 
 Game/fn_803CAEE4.c:
 	.text       start:0x803CAEE4 end:0x803CAF48
+
+Game/fn_803CB43C.c:
+	.text       start:0x803CB43C end:0x803CB45C
 
 Game/fn_80403054.c:
 	.text       start:0x80403054 end:0x80403058
