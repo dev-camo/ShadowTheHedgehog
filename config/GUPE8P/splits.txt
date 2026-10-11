@@ -98,11 +98,20 @@ Game/fn_803C8100.c:
 	.text       start:0x803C8100 end:0x803C8140
 	.bss        start:0x805B65A0 end:0x805B65B0
 
+Game/lbl_805B65B0.c:
+	.bss        start:0x805B65B0 end:0x805BACB8
+
 Game/fn_803C8140.c:
 	.text       start:0x803C8140 end:0x803C81A4
 
 Game/fn_803C81A4.c:
 	.text       start:0x803C81A4 end:0x803C8228
+
+Game/fn_803C8228.c:
+	.text       start:0x803C8228 end:0x803C8294
+
+Game/fn_803C8958.c:
+	.text       start:0x803C8958 end:0x803C89FC
 
 Game/fn_803C8D94.c:
 	.text       start:0x803C8D94 end:0x803C8E2C
