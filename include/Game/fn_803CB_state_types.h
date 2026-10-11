@@ -19,6 +19,8 @@ typedef struct Fn803CBPairView {
 
 extern Fn803CBStateView lbl_805BFD60;
 extern unsigned char lbl_805BFDA0[0x80];
+/* Raw backing extent; original aggregate/type identity unknown. */
+extern unsigned char lbl_805BFE38[0x2C0];
 extern Fn803CBPairView lbl_805BFE20;
 extern Fn803CBPairView lbl_805BFE28;
 extern Fn803CBPairView lbl_805BFE30;
