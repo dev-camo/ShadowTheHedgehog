@@ -371,6 +371,7 @@ config.libs = [
                 Object(Matching, "Game/fn_803CB45C.c"),
                 Object(Matching, "Game/lbl_805BFE38.c"),
                 Object(Matching, "Game/fn_803CBADC.c", extra_cflags=["-sdata 0"]),
+                Object(Matching, "Game/fn_803CBB34.c", extra_cflags=["-sdata 0"]),
                 Object(Matching, "Game/fn_803CAF48.c"),
                 Object(Matching, "Game/lbl_805BF158.c", extra_cflags=["-sdata 0"]),
                 Object(Matching, "Game/lbl_805B65B0.c", extra_cflags=["-sdata 0"]),

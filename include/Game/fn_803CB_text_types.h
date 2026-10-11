@@ -11,6 +11,7 @@ extern "C" {
 /* Chosen byte-buffer interfaces; original full types/arity/returns unknown. */
 char *fn_803ACABC(char *destination, const char *source, unsigned int count);
 void fn_803CBADC(const char *text);
+void fn_803CBB34(const char *format, ...);
 
 #ifdef __cplusplus
 }

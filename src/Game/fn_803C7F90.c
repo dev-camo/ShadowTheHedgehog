@@ -1,14 +1,4 @@
-/* MWCC EABI varargs layout; __builtin_va_info initializes these fields. */
-typedef struct {
-    unsigned char gpr;
-    unsigned char fpr;
-    unsigned char reserved[2];
-    void *input_arg_area;
-    void *reg_save_area;
-} MwccVaList[1];
-
-/* Inferred formatter signature; the return value is unused here. */
-extern int fn_803A92D8(char *buffer, const char *format, MwccVaList args);
+#include "mwcc_varargs.h"
 
 /* Inferred callback signature; its return value is unused. */
 typedef void (*DiagnosticCallback)(void *context, const char *text);
