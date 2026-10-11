@@ -386,6 +386,9 @@ config.libs = [
                 Object(Matching, "Game/fn_803C8228.c"),
                 Object(Matching, "Game/fn_803C8294.c"),
                 Object(Matching, "Game/fn_803C8464.c"),
+                Object(
+                    Matching, "Game/fn_803C84B8.c", extra_cflags=["-use_lmw_stmw on"]
+                ),
                 Object(Matching, "Game/fn_803C86F4.c"),
                 Object(Matching, "Game/fn_803C8958.c", extra_cflags=["-sdata 0"]),
                 Object(Matching, "Game/fn_803BF924.c"),
